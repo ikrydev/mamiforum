@@ -17,6 +17,7 @@
     <!-- TODO: implement last thread -->
   </div>
 </template>
+
 <script>
 export default {
   props: {

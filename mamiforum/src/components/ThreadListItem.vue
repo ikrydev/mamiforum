@@ -30,6 +30,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { users } from '@/data'
 

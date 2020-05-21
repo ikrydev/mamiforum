@@ -1,8 +1,5 @@
 <template>
-  <div class="forum-list">
-    <h2 class="list-title">
-      <a href="#">Forums</a>
-    </h2>
+  <div>
     <forum-list-item
       v-for="forum in forums"
       :key="forum['.key']"
@@ -10,6 +7,7 @@
     ></forum-list-item>
   </div>
 </template>
+
 <script>
 import ForumListItem from './ForumListItem'
 

@@ -7,6 +7,7 @@
     </post-list-item>
   </div>
 </template>
+
 <script>
 import PostListItem from './PostListItem'
 

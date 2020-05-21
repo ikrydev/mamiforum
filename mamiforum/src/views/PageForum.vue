@@ -1,20 +1,6 @@
 <template>
   <div class="forum-wrapper">
     <div class="col-full push-top">
-      <ul class="breadcrumbs">
-        <li>
-          <a href="/index.html">
-            <i class="fa fa-home fa-btn"></i>Home
-          </a>
-        </li>
-        <li>
-          <a href="/category.html">Discussions</a>
-        </li>
-        <li class="active">
-          <a href="#">Cooking</a>
-        </li>
-      </ul>
-
       <div class="forum-header">
         <div class="forum-details">
           <h1>{{forum.name}}</h1>
@@ -23,7 +9,6 @@
         <a href="new-thread.html" class="btn-green btn-small">Start a thread</a>
       </div>
     </div>
-
     <div class="col-full push-top">
       <thread-list :threads="threads"></thread-list>
     </div>

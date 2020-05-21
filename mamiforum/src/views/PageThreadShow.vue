@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import sourceData from '@/data'
+import { threads, posts, users } from '@/data'
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
 
@@ -30,25 +30,25 @@ export default {
   },
   data () {
     return {
-      thread: sourceData.threads[this.id],
+      thread: threads[this.id],
       newPostText: ''
     }
   },
   computed: {
     posts () {
       const postIds = Object.keys(this.thread.posts)
-      return Object.values(sourceData.posts).filter(post => postIds.includes(post['.key']))
+      return Object.values(posts).filter(post => postIds.includes(post['.key']))
     },
     user () {
-      return sourceData.users[this.thread.userId]
+      return users[this.thread.userId]
     }
   },
   methods: {
     addPost (postData) {
       const { '.key': postId, userId } = postData
 
-      this.$set(sourceData.posts, postId, postData)
-      this.$set(sourceData.users[userId].posts, postId, postId)
+      this.$set(posts, postId, postData)
+      this.$set(users[userId].posts, postId, postId)
       this.$set(this.thread.posts, postId, postId)
     }
   }

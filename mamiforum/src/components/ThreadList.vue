@@ -10,6 +10,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import ThreadListItem from './ThreadListItem'
 
