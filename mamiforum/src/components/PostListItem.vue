@@ -10,15 +10,13 @@
     <div class="post-content">
       <div>{{post.text}}</div>
     </div>
-    <div
-      class="post-date text-faded"
-      :title="post.publishedAt | userFriendlyDate"
-    >{{post.publishedAt | diffDate}}</div>
+    <div class="post-date text-faded">
+      <app-date :timestamp="post.publishedAt"></app-date>
+    </div>
   </div>
 </template>
 <script>
 import { users } from '@/data'
-import moment from 'moment'
 
 export default {
   props: {
@@ -30,14 +28,6 @@ export default {
     },
     userPostCount () {
       return Object.keys(this.user.posts).length
-    }
-  },
-  filters: {
-    userFriendlyDate (date) {
-      return moment.unix(date).format('MMMM Do YYYY, h:mm:ss a')
-    },
-    diffDate (date) {
-      return moment.unix(date).fromNow()
     }
   }
 }

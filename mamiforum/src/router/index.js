@@ -1,13 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import sourceData from '@/data'
+import { threads, forums } from '@/data'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '*',
-    alias: '/404',
     name: 'NotFound',
     component: () => import(/* webpackChunkName: "pageNotFound" */ '@/views/PageNotFound.vue')
   },
@@ -23,7 +22,18 @@ const routes = [
     component: () => import(/* webpackChunkName: "pageThreadShow" */ '@/views/PageThreadShow.vue'),
     beforeEnter: (to, from, next) => {
       const { id } = to.params
-      const thread = sourceData.threads[id]
+      const thread = threads[id]
+      thread ? next() : next('/404')
+    }
+  },
+  {
+    path: '/forum/:id',
+    name: 'Forum',
+    props: true,
+    component: () => import(/* webpackChunkName: "pageForum" */ '@/views/PageForum.vue'),
+    beforeEnter: (to, from, next) => {
+      const { id } = to.params
+      const thread = forums[id]
       thread ? next() : next('/404')
     }
   }

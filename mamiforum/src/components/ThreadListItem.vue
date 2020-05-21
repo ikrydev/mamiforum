@@ -7,7 +7,7 @@
       <p class="text-faded text-xsmall">
         By
         <a href="#">{{user.name}}</a>,
-        <span :title="thread.publishedAt | userFriendlyDate">{{thread.publishedAt | diffDate}}</span>.
+        <app-date :timestamp="thread.publishedAt"></app-date>.
       </p>
     </div>
 
@@ -32,7 +32,6 @@
 </template>
 <script>
 import { users } from '@/data'
-import moment from 'moment'
 
 export default {
   props: {
@@ -47,14 +46,6 @@ export default {
     },
     user () {
       return users[this.thread.userId]
-    }
-  },
-  filters: {
-    userFriendlyDate (date) {
-      return moment.unix(date).format('MMMM Do YYYY, h:mm:ss a')
-    },
-    diffDate (date) {
-      return moment.unix(date).fromNow()
     }
   }
 }

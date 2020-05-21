@@ -2,6 +2,10 @@
   <div>
     <div class="col-large push-top">
       <h1>{{thread.title}}</h1>
+      <p>
+        By <a href="#" class="link-unstyled">{{user.name}}</a>, <app-date :timestamp="thread.publishedAt"></app-date>.
+        <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">{{posts.length}} replies by 3 contributors</span>
+      </p>
       <post-list :posts="posts"></post-list>
       <post-editor @save="addPost" :threadId="id"></post-editor>
     </div>
@@ -34,6 +38,9 @@ export default {
     posts () {
       const postIds = Object.keys(this.thread.posts)
       return Object.values(sourceData.posts).filter(post => postIds.includes(post['.key']))
+    },
+    user () {
+      return sourceData.users[this.thread.userId]
     }
   },
   methods: {
