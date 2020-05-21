@@ -5,7 +5,6 @@
       :key="post['.key']"
       :post="post">
     </post-list-item>
-    <!-- //add some textare -->
   </div>
 </template>
 <script>
