@@ -12,7 +12,6 @@
 
 <script>
 import CategoryListItem from '@/components/CategoryListItem'
-import { categories } from '@/data'
 
 export default {
   components: {
@@ -26,7 +25,7 @@ export default {
   },
   computed: {
     category () {
-      return categories[this.id]
+      return this.$store.state.categories[this.id]
     }
   }
 }

@@ -32,7 +32,6 @@
 </template>
 
 <script>
-import { users } from '@/data'
 
 export default {
   props: {
@@ -46,7 +45,7 @@ export default {
       return Object.keys(this.thread.posts).length - 1
     },
     user () {
-      return users[this.thread.userId]
+      return this.$store.state.users[this.thread.userId]
     }
   }
 }

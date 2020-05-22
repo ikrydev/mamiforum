@@ -24,16 +24,14 @@ export default {
   },
   methods: {
     save () {
-      const postId = `newPost.${Math.random()}`
       const post = {
-        '.key': postId,
         publishedAt: Math.floor(Date.now() / 1000),
         text: this.text,
         threadId: this.threadId,
         userId: 'VXjpr2WHa8Ux4Bnggym8QFLdv5C3'
       }
 
-      this.$emit('save', post)
+      this.$store.dispatch('createPost', post)
       this.clearForm()
     },
     clearForm () {

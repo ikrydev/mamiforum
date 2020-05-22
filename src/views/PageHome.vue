@@ -6,20 +6,15 @@
 </template>
 
 <script>
-import { threads, forums, categories } from '@/data'
-// import ThreadList from '@/components/ThreadList'
-// import ForumList from '@/components/ForumList'
 import CategoryList from '@/components/CategoryList'
 
 export default {
   components: {
     CategoryList
   },
-  data () {
-    return {
-      threads: Object.values(threads),
-      forums: Object.values(forums),
-      categories: Object.values(categories)
+  computed: {
+    categories () {
+      return Object.values(this.$store.state.categories)
     }
   }
 }

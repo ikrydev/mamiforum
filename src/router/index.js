@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { threads, forums, categories } from '@/data'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -22,7 +22,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "pageThreadShow" */ '@/views/PageThreadShow.vue'),
     beforeEnter: (to, from, next) => {
       const { id } = to.params
-      const thread = threads[id]
+      const thread = store.state.threads[id]
       thread ? next() : next('/404')
     }
   },
@@ -33,7 +33,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "pageForum" */ '@/views/PageForum.vue'),
     beforeEnter: (to, from, next) => {
       const { id } = to.params
-      const forum = forums[id]
+      const forum = store.state.forums[id]
       forum ? next() : next('/404')
     }
   },
@@ -44,7 +44,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "pageCategory" */ '@/views/PageCategory.vue'),
     beforeEnter: (to, from, next) => {
       const { id } = to.params
-      const category = categories[id]
+      const category = store.state.categories[id]
       category ? next() : next('/404')
     }
   }

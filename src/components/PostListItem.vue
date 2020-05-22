@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import { users } from '@/data'
 
 export default {
   props: {
@@ -25,7 +24,7 @@ export default {
   },
   computed: {
     user () {
-      return users[this.post.userId]
+      return this.$store.state.users[this.post.userId]
     },
     userPostCount () {
       return Object.keys(this.user.posts).length
