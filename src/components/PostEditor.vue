@@ -4,7 +4,7 @@
       <textarea @keyup.enter="save" v-model="text" class="form-input" cols="30" rows="10"></textarea>
     </div>
     <div class="form-actions">
-      <button type="submit" class="btn-blue">Add Post</button>
+      <button type="submit" class="btn-blue">Submit Post</button>
     </div>
   </form>
 </template>
