@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { objectPropertiesCounter } from '@/utils'
 
 export default {
   props: {
@@ -42,7 +43,7 @@ export default {
   },
   computed: {
     repliesCount () {
-      return Object.keys(this.thread.posts).length - 1
+      return objectPropertiesCounter(this.thread.posts) - 1
     },
     user () {
       return this.$store.state.users[this.thread.userId]

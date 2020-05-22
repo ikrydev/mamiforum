@@ -28,7 +28,7 @@ export default {
         publishedAt: Math.floor(Date.now() / 1000),
         text: this.text,
         threadId: this.threadId,
-        userId: 'VXjpr2WHa8Ux4Bnggym8QFLdv5C3'
+        userId: this.$store.state.authId
       }
 
       this.$store.dispatch('createPost', post)

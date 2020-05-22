@@ -5,7 +5,15 @@ import data from '@/data'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: data,
+  state: {
+    ...data,
+    authId: 'VXjpr2WHa8Ux4Bnggym8QFLdv5C3'
+  },
+  getters: {
+    authUser (state) {
+      return state.users[state.authId]
+    }
+  },
   mutations: {
     addToPosts (state, { postId, post }) {
       Vue.set(state.posts, postId, post)

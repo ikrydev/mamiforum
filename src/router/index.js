@@ -8,18 +8,18 @@ const routes = [
   {
     path: '*',
     name: 'NotFound',
-    component: () => import(/* webpackChunkName: "pageNotFound" */ '@/views/PageNotFound.vue')
+    component: () => import(/* webpackChunkName: "notfound" */ '@/views/PageNotFound.vue')
   },
   {
     path: '/',
     name: 'Home',
-    component: () => import(/* webpackChunkName: "pageHome" */ '@/views/PageHome.vue')
+    component: () => import(/* webpackChunkName: "home" */ '@/views/PageHome.vue')
   },
   {
     path: '/thread/:id',
     name: 'ThreadShow',
     props: true,
-    component: () => import(/* webpackChunkName: "pageThreadShow" */ '@/views/PageThreadShow.vue'),
+    component: () => import(/* webpackChunkName: "thread-show" */ '@/views/PageThreadShow.vue'),
     beforeEnter: (to, from, next) => {
       const { id } = to.params
       const thread = store.state.threads[id]
@@ -30,7 +30,7 @@ const routes = [
     path: '/forum/:id',
     name: 'Forum',
     props: true,
-    component: () => import(/* webpackChunkName: "pageForum" */ '@/views/PageForum.vue'),
+    component: () => import(/* webpackChunkName: "forum" */ '@/views/PageForum.vue'),
     beforeEnter: (to, from, next) => {
       const { id } = to.params
       const forum = store.state.forums[id]
@@ -41,12 +41,17 @@ const routes = [
     path: '/category/:id',
     name: 'Category',
     props: true,
-    component: () => import(/* webpackChunkName: "pageCategory" */ '@/views/PageCategory.vue'),
+    component: () => import(/* webpackChunkName: "category" */ '@/views/PageCategory.vue'),
     beforeEnter: (to, from, next) => {
       const { id } = to.params
       const category = store.state.categories[id]
       category ? next() : next('/404')
     }
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import(/* webpackChunkName: "profile" */ '@/views/PageProfile.vue')
   }
 ]
 

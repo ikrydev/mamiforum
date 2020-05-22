@@ -15,17 +15,17 @@
     <nav class="navbar">
       <ul>
         <li class="navbar-user">
-          <a href="#">
+          <router-link :to="{name: 'Profile'}">
             <img
               class="avatar-small"
-              src="https://i.imgur.com/WPSrfGm.jpg"
+              :src="user.avatar"
               alt
             />
             <span>
-              Alex Kyriakidis
+              {{user.name}}
               <img class="icon-profile" :src="require('@/assets/img/arrow-profile.svg')" alt />
             </span>
-          </a>
+          </router-link>
 
           <!-- dropdown menu -->
           <!-- add class "active-drop" to show the dropdown -->
@@ -46,3 +46,14 @@
     </nav>
   </header>
 </template>
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  computed: {
+    ...mapGetters({
+      user: 'authUser'
+    })
+  }
+}
+</script>
