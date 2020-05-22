@@ -36,7 +36,7 @@ export default {
     }
   },
   methods: {
-    async save ({ title, text }) {
+    save ({ title, text }) {
       const threadId = this.thread['.key']
       this.$store.dispatch('updateThread', { title, text, threadId })
       this.$router.push({ name: 'ThreadShow', params: { id: threadId } })
