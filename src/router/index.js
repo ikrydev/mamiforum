@@ -16,6 +16,17 @@ const routes = [
     component: () => import(/* webpackChunkName: "home" */ '@/views/PageHome.vue')
   },
   {
+    path: '/thread/create/:id',
+    name: 'ThreadCreate',
+    props: true,
+    component: () => import(/* webpackChunkName: "thread-create" */ '@/views/PageThreadCreate.vue'),
+    beforeEnter: (to, from, next) => {
+      const { id } = to.params
+      const froum = store.state.forums[id]
+      froum ? next() : next('/404')
+    }
+  },
+  {
     path: '/thread/:id',
     name: 'ThreadShow',
     props: true,
