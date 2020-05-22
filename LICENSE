@@ -1,38 +1,3 @@
-# mamiforum
-```
-This is project repository for final project on Mamicamp 2020.
-```
-## Stacks
-
-- Vue `2.6.11`
-
-## TODO
-
-- [x] Static Page[Forums, Threads, User]
-- [x] Forum Threads
-- [ ] Forum Posts
-- [ ] Integration with Firebase Real-Time Database
-- [ ] User Authentification
-- [ ] Middleware
-- [ ] Validation All Form
-
-## Project setup
-```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
-
-### Compiles and minifies for production
-```
-yarn run build
-```
-## License
-
-```
 MIT License
 
 Copyright (c) 2020 Agus Fikri Suyuthi
@@ -54,4 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-```
