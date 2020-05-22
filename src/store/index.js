@@ -54,7 +54,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    editProfile ({ commit }, user) {
+    updateProfile ({ commit }, user) {
       commit('setUser', user)
     },
     createPost ({ commit, state }, post) {
@@ -67,6 +67,15 @@ export default new Vuex.Store({
       commit('setPosts', { postId, post })
       commit('appendPostToThread', { postId, post })
       commit('appendPostToUser', { postId, post })
+      return Promise.resolve(state.posts[postId])
+    },
+    updatePost ({ commit, state }, { text, postId }) {
+      const post = {
+        ...state.posts[postId],
+        text
+      }
+
+      commit('setPosts', { postId, post })
       return Promise.resolve(state.posts[postId])
     },
     createThread ({ commit, state, dispatch }, { title, text, forumId }) {
@@ -91,6 +100,13 @@ export default new Vuex.Store({
           })
         resolve(state.threads[threadId])
       })
+    },
+    updateThread ({ commit, state, dispatch }, { title, text, threadId }) {
+      const thread = state.threads[threadId]
+      const postId = thread.firstPostId
+
+      commit('setThread', { threadId, thread: { ...thread, title } })
+      dispatch('updatePost', { text, postId })
     }
   }
 })

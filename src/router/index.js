@@ -38,6 +38,17 @@ const routes = [
     }
   },
   {
+    path: '/thread/:id/edit',
+    name: 'ThreadEdit',
+    props: true,
+    component: () => import(/* webpackChunkName: "thread-edit" */ '@/views/PageThreadEdit.vue'),
+    beforeEnter: (to, from, next) => {
+      const { id } = to.params
+      const thread = store.state.threads[id]
+      thread ? next() : next('/404')
+    }
+  },
+  {
     path: '/forum/:id',
     name: 'Forum',
     props: true,

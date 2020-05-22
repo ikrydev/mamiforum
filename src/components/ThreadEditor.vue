@@ -12,18 +12,35 @@
 
     <div class="btn-group">
       <button @click.prevent="cancel" class="btn btn-ghost">Cancel</button>
-      <button class="btn btn-blue" type="submit" name="Publish">Publish</button>
+      <button class="btn btn-blue" type="submit" name="Publish">
+        {{isUpdated ? 'Update' : 'Publish'}}
+      </button>
     </div>
   </form>
 </template>
 <script>
 export default {
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    text: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       form: {
-        title: '',
-        text: ''
+        title: this.title,
+        text: this.text
       }
+    }
+  },
+  computed: {
+    isUpdated () {
+      return !!this.title
     }
   },
   methods: {

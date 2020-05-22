@@ -82,7 +82,7 @@ export default {
   },
   methods: {
     save () {
-      this.$store.dispatch('editProfile', { ...this.activeUser })
+      this.$store.dispatch('updateProfile', { ...this.activeUser })
       this.$router.push({ name: 'Profile' })
     },
     cancel () {

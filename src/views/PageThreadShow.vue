@@ -1,9 +1,14 @@
 <template>
   <div class="col-large push-top">
     <h1>{{thread.title}}</h1>
+    <router-link
+      :to="{name: 'ThreadEdit', params: {id: thread['.key']}}"
+    ><i class="fa fa-pencil"></i> Edit Thread</router-link>
     <p>
       By <a href="#" class="link-unstyled">{{user.name}}</a>, <app-date :timestamp="thread.publishedAt"></app-date>.
-      <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">{{repliesCount}} replies by 3 contributors</span>
+      <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">
+        {{repliesCount}} replies
+      </span>
     </p>
     <post-list :posts="posts"></post-list>
     <post-editor :threadId="id"></post-editor>
