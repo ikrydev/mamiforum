@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="save">
     <div class="form-group">
-      <textarea @keyup.enter="save" v-model="text" class="form-input" cols="30" rows="10"></textarea>
+      <textarea v-model="text" class="form-input" cols="30" rows="10"></textarea>
     </div>
     <div class="form-actions">
       <button type="submit" class="btn-blue">Submit Post</button>
