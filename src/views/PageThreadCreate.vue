@@ -31,9 +31,10 @@ export default {
     }
   },
   methods: {
-    save ({ title, text }) {
-      // TODO: add action create thread
-      console.log(`title : ${title} , text: ${text}`)
+    async save ({ title, text }) {
+      const forumId = this.id
+      const thread = await this.$store.dispatch('createThread', { title, text, forumId })
+      this.$router.push({ name: 'ThreadShow', params: { id: thread['.key'] } })
     },
     cancel () {
       this.$router.push({ name: 'Forum', params: { id: this.id } })
