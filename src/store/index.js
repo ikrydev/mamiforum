@@ -58,7 +58,7 @@ export default new Vuex.Store({
       commit('setUser', user)
     },
     createPost ({ commit, state }, post) {
-      const postId = `newPost.${Math.random()}`
+      const postId = `awesomePost.${Math.random()}`
 
       post['.key'] = postId
       post.publishedAt = Math.floor(Date.now() / 1000)
@@ -80,7 +80,7 @@ export default new Vuex.Store({
     },
     createThread ({ commit, state, dispatch }, { title, text, forumId }) {
       return new Promise((resolve, reject) => {
-        const threadId = `newThread.${Math.random()}`
+        const threadId = `awesomeThread.${Math.random()}`
         const userId = state.authId
         const publishedAt = Math.floor(Date.now() / 1000)
         const thread = {
@@ -95,8 +95,8 @@ export default new Vuex.Store({
         commit('appendThreadToUser', { userId, threadId })
 
         dispatch('createPost', { text, threadId })
-          .then(res => {
-            commit('setThread', { threadId, thread: { ...thread, firstPostId: res['.key'] } })
+          .then(post => {
+            commit('setThread', { threadId, thread: { ...thread, firstPostId: post['.key'] } })
           })
         resolve(state.threads[threadId])
       })
