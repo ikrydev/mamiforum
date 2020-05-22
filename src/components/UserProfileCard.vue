@@ -14,7 +14,7 @@
         <span v-else>No bio specified.</span>
       </p>
 
-      <span class="online">{{user.name}} is online</span>
+      <span class="online">{{user.username}} is online</span>
 
       <div class="stats">
         <span>{{userPostsCount}} posts</span>

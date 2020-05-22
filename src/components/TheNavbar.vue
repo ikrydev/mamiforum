@@ -1,5 +1,5 @@
 <template>
-  <header class="header col-full" id="header">
+  <header class="header" id="header">
     <router-link :to="{ name: 'Home' }" class="logo">
       <img :src="require('@/assets/img/logo.png')" />
     </router-link>
