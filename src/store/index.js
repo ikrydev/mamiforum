@@ -15,7 +15,10 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    addToPosts (state, { postId, post }) {
+    setUser (state, user) {
+      Vue.set(state.users, user['.key'], user)
+    },
+    setPosts (state, { postId, post }) {
       Vue.set(state.posts, postId, post)
     },
     appendPostToThread (state, { postId, post }) {
@@ -28,10 +31,17 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    createPost ({ commit }, post) {
+    editProfile ({ commit }, user) {
+      commit('setUser', user)
+    },
+    createPost ({ commit, state }, post) {
       const postId = `newPost.${Math.random()}`
+
       post['.key'] = postId
-      commit('addToPosts', { postId, post })
+      post.publishedAt = Math.floor(Date.now() / 1000)
+      post.userId = state.authId
+
+      commit('setPosts', { postId, post })
       commit('appendPostToThread', { postId, post })
       commit('appendPostToUser', { postId, post })
     }

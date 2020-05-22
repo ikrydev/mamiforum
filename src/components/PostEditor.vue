@@ -25,13 +25,11 @@ export default {
   methods: {
     save () {
       const post = {
-        publishedAt: Math.floor(Date.now() / 1000),
         text: this.text,
-        threadId: this.threadId,
-        userId: this.$store.state.authId
+        threadId: this.threadId
       }
 
-      this.$store.dispatch('createPost', post)
+      this.$store.dispatch('createPost', { ...post })
       this.clearForm()
     },
     clearForm () {

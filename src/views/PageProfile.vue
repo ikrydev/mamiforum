@@ -2,52 +2,23 @@
   <div>
     <div class="flex-grid">
       <div class="col-3 push-top">
-        <div class="profile-card">
-          <p class="text-center">
-            <img
-              :src="user.avatar"
-              alt
-              class="avatar-xlarge"
-            />
-          </p>
-
-          <h1 class="title">{{user.username}}</h1>
-
-          <p class="text-lead">{{user.name}}</p>
-
-          <p class="text-justify">
-            <span v-if="user.bio">{{user.bio}}</span>
-            <span v-else>No bio specified.</span>
-          </p>
-
-          <span class="online">{{user.name}} is online</span>
-
-          <div class="stats">
-            <span>{{userPostsCount}} posts</span>
-            <span>{{userThreadsCount}} threads</span>
-          </div>
-
-          <hr />
-
-          <p class="text-large text-center">
-            <i class="fa fa-globe"></i>
-            <a v-if="user.website" :href="user.website">{{user.website}}</a>
-          </p>
-        </div>
-
-        <p
-          class="text-xsmall text-faded text-center"
-        >Member since june 2020, last visited 2 hours ago</p>
-
-        <div class="text-center">
-          <hr />
-          <a href="#" class="btn-green btn-small">Edit Profile</a>
-        </div>
+        <user-profile-card
+          v-if="!edit"
+          :user="user"
+          :userPostsCount="userPostsCount"
+          :userThreadsCount="userThreadsCount"
+        ></user-profile-card>
+        <user-profile-card-editor
+          v-else
+          :user="user"
+          :userPostsCount="userPostsCount"
+          :userThreadsCount="userThreadsCount"
+        ></user-profile-card-editor>
       </div>
 
       <div class="col-7 push-top">
         <div class="profile-header">
-          <span class="text-lead">{{user.name}}'s recent activity</span>
+          <span class="text-lead">{{user.username}}'s recent activity</span>
           <a href="#">See only started threads?</a>
         </div>
 
@@ -62,10 +33,20 @@
 import { mapGetters } from 'vuex'
 import { objectPropertiesCounter } from '@/utils'
 import PostList from '@/components/PostList'
+import UserProfileCard from '@/components/UserProfileCard'
+import UserProfileCardEditor from '@/components/UserProfileCardEditor'
 
 export default {
   components: {
-    PostList
+    PostList,
+    UserProfileCard,
+    UserProfileCardEditor
+  },
+  props: {
+    edit: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     ...mapGetters({
