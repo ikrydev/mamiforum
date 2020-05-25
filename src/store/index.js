@@ -72,7 +72,12 @@ export default new Vuex.Store({
     updatePost ({ commit, state }, { text, postId }) {
       const post = {
         ...state.posts[postId],
-        text
+        text,
+        edited: {
+          at: Math.floor(Date.now() / 1000),
+          by: state.authId,
+          moderated: false
+        }
       }
 
       commit('setPosts', { postId, post })
