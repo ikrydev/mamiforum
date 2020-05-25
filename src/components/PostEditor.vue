@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="save" class="col-full">
+  <form @submit.prevent="save" :class="{'col-full':isEditing}">
     <div class="form-group">
       <textarea v-model="text" class="form-input" cols="30" rows="10"></textarea>
     </div>
