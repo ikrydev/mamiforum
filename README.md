@@ -10,7 +10,7 @@ This is project repository for final project on Mamicamp 2020.
 
 - [x] Static Page[Forums, Threads, User]
 - [x] Forum Threads
-- [ ] Forum Posts
+- [x] Forum Posts
 - [ ] Integration with Firebase Real-Time Database
 - [ ] User Authentification
 - [ ] Middleware
