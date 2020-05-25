@@ -7,7 +7,7 @@
     <p>
       By <a href="#" class="link-unstyled">{{user.name}}</a>, <app-date :timestamp="thread.publishedAt"></app-date>.
       <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">
-        {{repliesCount}} replies
+        {{repliesCount}} replies by {{contributorsCount}} contributors
       </span>
     </p>
     <post-list :posts="posts"></post-list>
@@ -43,6 +43,12 @@ export default {
     },
     repliesCount () {
       return this.posts.length - 1
+    },
+    contributorsCount () {
+      const authorPost = this.posts.find(post => post['.key'] === this.thread.firstPostId)
+      const contributorIdsByPost = this.posts.filter(post => post.userId !== authorPost.userId).map(post => post.userId)
+      const uniqueContributors = [...new Set(contributorIdsByPost)]
+      return uniqueContributors.length
     }
   }
 }
