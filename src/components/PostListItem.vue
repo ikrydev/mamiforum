@@ -5,7 +5,8 @@
       <a href="#">
         <img class="avatar-large" :src="user.avatar" :alt="user.name" />
       </a>
-      <p class="desktop-only text-small">{{userPostCount}} posts</p>
+      <p class="desktop-only text-small">{{userThreadsCount}} threads</p>
+      <p class="desktop-only text-small">{{userPostsCount}} posts</p>
     </div>
     <div class="post-content">
       <template v-if="!editing">
@@ -31,7 +32,6 @@
 </template>
 
 <script>
-import { objectPropertiesCounter } from '@/utils'
 import PostEditor from '@/components/PostEditor'
 
 export default {
@@ -50,8 +50,11 @@ export default {
     user () {
       return this.$store.state.users[this.post.userId]
     },
-    userPostCount () {
-      return objectPropertiesCounter(this.user.posts)
+    userPostsCount () {
+      return this.$store.getters.userPostsCount(this.user['.key'])
+    },
+    userThreadsCount () {
+      return this.$store.getters.userThreadsCount(this.user['.key'])
     }
   }
 }
