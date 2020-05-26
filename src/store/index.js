@@ -24,7 +24,7 @@ export default new Vuex.Store({
     },
     userPostsCount: state => userId => objectPropertiesCounter(state.users[userId].posts),
     userThreadsCount: state => userId => objectPropertiesCounter(state.users[userId].threads),
-    threadRepliesCount: state => threadId => objectPropertiesCounter(state.threads[threadId]) - 1
+    threadRepliesCount: state => threadId => objectPropertiesCounter(state.threads[threadId].posts) - 1
   },
   mutations: {
     setUser (state, { userId, user }) {
