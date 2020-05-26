@@ -5,7 +5,7 @@ import { objectPropertiesCounter } from '@/utils'
 
 Vue.use(Vuex)
 
-const appendChildToParentMutation = (parent, child) => (state, { parentId, childId }) => {
+const appendChildToParentMutation = ({ parent, child }) => (state, { parentId, childId }) => {
   const resource = state[parent][parentId]
   if (!resource[child]) {
     Vue.set(resource, child, {})
@@ -23,11 +23,12 @@ export default new Vuex.Store({
       return state.users[state.authId]
     },
     userPostsCount: state => userId => objectPropertiesCounter(state.users[userId].posts),
-    userThreadsCount: state => userId => objectPropertiesCounter(state.users[userId].threads)
+    userThreadsCount: state => userId => objectPropertiesCounter(state.users[userId].threads),
+    threadRepliesCount: state => threadId => objectPropertiesCounter(state.threads[threadId].posts) - 1
   },
   mutations: {
-    setUser (state, user) {
-      Vue.set(state.users, user['.key'], user)
+    setUser (state, { userId, user }) {
+      Vue.set(state.users, userId, user)
     },
     setPosts (state, { postId, post }) {
       Vue.set(state.posts, postId, post)
@@ -35,14 +36,14 @@ export default new Vuex.Store({
     setThread (state, { threadId, thread }) {
       Vue.set(state.threads, threadId, thread)
     },
-    appendPostToThread: appendChildToParentMutation('threads', 'posts'),
-    appendPostToUser: appendChildToParentMutation('users', 'posts'),
-    appendThreadToForum: appendChildToParentMutation('forums', 'threads'),
-    appendThreadToUser: appendChildToParentMutation('users', 'threads')
+    appendPostToThread: appendChildToParentMutation({ parent: 'threads', child: 'posts' }),
+    appendPostToUser: appendChildToParentMutation({ parent: 'users', child: 'posts' }),
+    appendThreadToForum: appendChildToParentMutation({ parent: 'forums', child: 'threads' }),
+    appendThreadToUser: appendChildToParentMutation({ parent: 'users', child: 'threads' })
   },
   actions: {
-    updateProfile ({ commit }, user) {
-      commit('setUser', user)
+    updateProfile ({ commit }, { userId, user }) {
+      commit('setUser', { userId, user })
     },
     createPost ({ commit, state }, { text, threadId }) {
       const postId = `awesomePost.${Math.random()}`
@@ -59,7 +60,7 @@ export default new Vuex.Store({
       commit('appendPostToUser', { parentId: userId, childId: postId })
       return Promise.resolve(state.posts[postId])
     },
-    updatePost ({ commit, state }, { text, postId }) {
+    updatePost ({ commit, state }, { postId, text }) {
       const post = {
         ...state.posts[postId],
         text,

@@ -42,7 +42,7 @@ export default {
       return this.$store.state.users[this.thread.userId]
     },
     repliesCount () {
-      return this.posts.length - 1
+      return this.$store.getters.threadRepliesCount(this.id)
     },
     contributorsCount () {
       const authorPost = this.posts.find(post => post['.key'] === this.thread.firstPostId)

@@ -82,7 +82,10 @@ export default {
   },
   methods: {
     save () {
-      this.$store.dispatch('updateProfile', { ...this.activeUser })
+      const user = {
+        ...this.activeUser
+      }
+      this.$store.dispatch('updateProfile', { useId: user['.key'], user })
       this.$router.push({ name: 'Profile' })
     },
     cancel () {
