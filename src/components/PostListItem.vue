@@ -1,5 +1,5 @@
 <template>
-  <div class="post">
+  <div class="post" v-if="post && user">
     <div class="user-info">
       <a href="#" class="user-name">{{user.name}}</a>
       <a href="#">
