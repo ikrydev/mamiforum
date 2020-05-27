@@ -41,6 +41,10 @@ export default new Vuex.Store({
     setThread (state, { threadId, thread }) {
       Vue.set(state.threads, threadId, thread)
     },
+    setItem (state, { resource, id, item }) {
+      item['.key'] = id
+      Vue.set(state[resource], id, item)
+    },
     appendPostToThread: appendChildToParentMutation({ parent: 'threads', child: 'posts' }),
     appendPostToUser: appendChildToParentMutation({ parent: 'users', child: 'posts' }),
     appendThreadToForum: appendChildToParentMutation({ parent: 'forums', child: 'threads' }),
@@ -109,41 +113,25 @@ export default new Vuex.Store({
       commit('setThread', { threadId, thread: { ...thread, title } })
       dispatch('updatePost', { text, postId })
     },
-    fetchThread ({ commit, state }, { threadId }) {
-      console.log(`🔥 📄 : ${threadId}`)
+    fetchItem ({ commit, state }, { resource, id, emoji }) {
+      console.log(`🔥 ${emoji} : ${id}`)
       return new Promise((resolve, reject) => {
-        firebase.database().ref('threads').child(threadId)
+        firebase.database().ref(resource).child(id)
           .once('value', snapshot => {
-            const thread = snapshot.val()
-            commit('setThread', { threadId: snapshot.key, thread: { ...thread, '.key': snapshot.key } })
+            commit('setItem', { resource, id: snapshot.key, item: snapshot.val() })
 
-            resolve(state.threads[threadId])
+            resolve(state[resource][id])
           })
       })
     },
-    fetchUser ({ commit, state }, { userId }) {
-      console.log(`🔥 👨‍💼 : ${userId}`)
-      return new Promise((resolve, reject) => {
-        firebase.database().ref('users').child(userId)
-          .once('value', snapshot => {
-            const user = snapshot.val()
-            commit('setUser', { userId: snapshot.key, user: { ...user, '.key': snapshot.key } })
-
-            resolve(state.users[userId])
-          })
-      })
+    fetchThread ({ dispatch }, { threadId }) {
+      return dispatch('fetchItem', { resource: 'threads', id: threadId, emoji: '📄' })
     },
-    fetchPost ({ commit, state }, { postId }) {
-      console.log(`🔥 📚 : ${postId}`)
-      return new Promise((resolve, reject) => {
-        firebase.database().ref('posts').child(postId)
-          .once('value', snapshot => {
-            const post = snapshot.val()
-            commit('setPost', { postId: snapshot.key, post: { ...post, '.key': snapshot.key } })
-
-            resolve(state.posts[postId])
-          })
-      })
+    fetchUser ({ dispatch }, { userId }) {
+      return dispatch('fetchItem', { resource: 'users', id: userId, emoji: '👨‍💼' })
+    },
+    fetchPost ({ dispatch }, { postId }) {
+      return dispatch('fetchItem', { resource: 'posts', id: postId, emoji: '📚' })
     }
   }
 })

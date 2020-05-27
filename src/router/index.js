@@ -30,12 +30,12 @@ const routes = [
     path: '/thread/:id',
     name: 'ThreadShow',
     props: true,
-    component: () => import(/* webpackChunkName: "thread-show" */ '@/views/PageThreadShow.vue'),
-    beforeEnter: (to, from, next) => {
-      const { id } = to.params
-      const thread = store.state.threads[id]
-      thread ? next() : next('/404')
-    }
+    component: () => import(/* webpackChunkName: "thread-show" */ '@/views/PageThreadShow.vue')
+    // beforeEnter: (to, from, next) => {
+    //   const { id } = to.params
+    //   const thread = store.state.threads[id]
+    //   thread ? next() : next('/404')
+    // }
   },
   {
     path: '/thread/:id/edit',
