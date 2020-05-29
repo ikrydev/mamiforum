@@ -1,17 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import firebase from 'firebase'
-import { objectPropertiesCounter } from '@/utils'
+import getters from './getters'
+import mutations from './mutations'
+import actions from './actions'
 
 Vue.use(Vuex)
-
-const appendChildToParentMutation = ({ parent, child }) => (state, { parentId, childId }) => {
-  const resource = state[parent][parentId]
-  if (!resource[child]) {
-    Vue.set(resource, child, {})
-  }
-  Vue.set(resource[child], childId, childId)
-}
 
 export default new Vuex.Store({
   state: {
@@ -22,149 +15,7 @@ export default new Vuex.Store({
     users: {},
     authId: 'NnooaWj4KHVxbhKwO1pEdfaQDsD2'
   },
-  getters: {
-    authUser (state) {
-      return { name: 'fikri', avatar: '' }
-      // return state.users[state.authId]
-    },
-    userPostsCount: state => userId => objectPropertiesCounter(state.users[userId].posts),
-    userThreadsCount: state => userId => objectPropertiesCounter(state.users[userId].threads),
-    threadRepliesCount: state => threadId => objectPropertiesCounter(state.threads[threadId].posts) - 1
-  },
-  mutations: {
-    setUser (state, { userId, user }) {
-      Vue.set(state.users, userId, user)
-    },
-    setPost (state, { postId, post }) {
-      Vue.set(state.posts, postId, post)
-    },
-    setThread (state, { threadId, thread }) {
-      Vue.set(state.threads, threadId, thread)
-    },
-    setItem (state, { resource, id, item }) {
-      item['.key'] = id
-      Vue.set(state[resource], id, item)
-    },
-    appendPostToThread: appendChildToParentMutation({ parent: 'threads', child: 'posts' }),
-    appendPostToUser: appendChildToParentMutation({ parent: 'users', child: 'posts' }),
-    appendThreadToForum: appendChildToParentMutation({ parent: 'forums', child: 'threads' }),
-    appendThreadToUser: appendChildToParentMutation({ parent: 'users', child: 'threads' })
-  },
-  actions: {
-    updateProfile ({ commit }, { userId, user }) {
-      commit('setUser', { userId, user })
-    },
-    createPost ({ commit, state }, { text, threadId }) {
-      const postId = `awesomePost.${Math.random()}`
-      const userId = state.authId
-      const post = {
-        '.key': postId,
-        publishedAt: Math.floor(Date.now() / 1000),
-        userId,
-        text
-      }
-
-      commit('setPost', { postId, post })
-      commit('appendPostToThread', { parentId: threadId, childId: postId })
-      commit('appendPostToUser', { parentId: userId, childId: postId })
-      return Promise.resolve(state.posts[postId])
-    },
-    updatePost ({ commit, state }, { postId, text }) {
-      const post = {
-        ...state.posts[postId],
-        text,
-        edited: {
-          at: Math.floor(Date.now() / 1000),
-          by: state.authId,
-          moderated: false
-        }
-      }
-
-      commit('setPost', { postId, post })
-      return Promise.resolve(state.posts[postId])
-    },
-    createThread ({ commit, state, dispatch }, { title, text, forumId }) {
-      return new Promise((resolve, reject) => {
-        const threadId = `awesomeThread.${Math.random()}`
-        const userId = state.authId
-        const publishedAt = Math.floor(Date.now() / 1000)
-        const thread = {
-          '.key': threadId,
-          forumId,
-          title,
-          userId,
-          publishedAt
-        }
-        commit('setThread', { threadId, thread })
-        commit('appendThreadToForum', { parentId: forumId, childId: threadId })
-        commit('appendThreadToUser', { parentId: userId, childId: threadId })
-
-        dispatch('createPost', { text, threadId })
-          .then(post => {
-            commit('setThread', { threadId, thread: { ...thread, firstPostId: post['.key'] } })
-          })
-        resolve(state.threads[threadId])
-      })
-    },
-    updateThread ({ commit, state, dispatch }, { title, text, threadId }) {
-      const thread = state.threads[threadId]
-      const postId = thread.firstPostId
-
-      commit('setThread', { threadId, thread: { ...thread, title } })
-      dispatch('updatePost', { text, postId })
-    },
-    fetchItem ({ commit, state }, { resource, id, emoji }) {
-      console.log(`🔥 ${emoji} : ${id}`)
-      return new Promise((resolve, reject) => {
-        firebase.database().ref(resource).child(id)
-          .once('value', snapshot => {
-            commit('setItem', { resource, id: snapshot.key, item: snapshot.val() })
-
-            resolve(state[resource][id])
-          })
-      })
-    },
-    fetchCategory ({ dispatch }, { categoryId }) {
-      return dispatch('fetchItem', { resource: 'categories', id: categoryId, emoji: '🏷' })
-    },
-    fetchForum ({ dispatch }, { forumId }) {
-      return dispatch('fetchItem', { resource: 'forums', id: forumId, emoji: '📃' })
-    },
-    fetchThread ({ dispatch }, { threadId }) {
-      return dispatch('fetchItem', { resource: 'threads', id: threadId, emoji: '📄' })
-    },
-    fetchPost ({ dispatch }, { postId }) {
-      return dispatch('fetchItem', { resource: 'posts', id: postId, emoji: '📚' })
-    },
-    fetchUser ({ dispatch }, { userId }) {
-      return dispatch('fetchItem', { resource: 'users', id: userId, emoji: '👨‍💼' })
-    },
-    fetchAllCategories ({ state, commit }) {
-      console.log('🔥 🏷 : all')
-      return new Promise((resolve, reject) => {
-        firebase.database().ref('categories').once('value', snapshot => {
-          const categories = snapshot.val()
-          Object.keys(categories).forEach(categoryId => {
-            const category = categories[categoryId]
-            commit('setItem', { resource: 'categories', id: categoryId, item: category })
-          })
-
-          resolve(Object.values(state.categories))
-        })
-      })
-    },
-    fetchItems ({ dispatch }, { ids, resource, emoji }) {
-      ids = Array.isArray(ids) ? ids : Object.keys(ids)
-      return Promise.all(ids.map(id => dispatch('fetchItem', { resource, id, emoji })))
-    },
-    fetchForums ({ dispatch }, { ids }) {
-      return dispatch('fetchItems', { ids, resource: 'forums', emoji: '📃' })
-    },
-    fetchThreads ({ dispatch }, { ids }) {
-      return dispatch('fetchItems', { ids, resource: 'threads', emoji: '📄' })
-    },
-    fetchPosts ({ dispatch }, { ids }) {
-      return dispatch('fetchItems', { ids, resource: 'posts', emoji: '📚' })
-    }
-  }
+  getters,
+  mutations,
+  actions
 })
