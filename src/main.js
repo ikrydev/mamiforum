@@ -3,6 +3,7 @@ import firebase from 'firebase'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+
 import AppDate from '@/components/AppDate'
 
 const firebaseConfig = {
@@ -24,5 +25,8 @@ Vue.config.productionTip = false
 new Vue({
   router,
   store,
+  beforeCreate () {
+    store.dispatch('fetchUser', { userId: store.state.authId })
+  },
   render: h => h(App)
 }).$mount('#app')
