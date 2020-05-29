@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
 import { objectPropertiesCounter } from '@/utils'
@@ -49,17 +50,14 @@ export default {
       return objectPropertiesCounter(this.thread.contributors)
     }
   },
+  methods: {
+    ...mapActions(['fetchThread', 'fetchUser', 'fetchPosts', 'fetchUser'])
+  },
   created () {
-    // fetch thread
-    this.$store.dispatch('fetchThread', { threadId: this.id }).then(thread => {
-      // fetch thread user
-      this.$store.dispatch('fetchUser', { userId: thread.userId })
-      // fetch posts
-      this.$store.dispatch('fetchPosts', { ids: Object.keys(thread.posts) }).then(posts => {
-        posts.forEach(post => {
-          // fetch author of post
-          this.$store.dispatch('fetchUser', { userId: post.userId })
-        })
+    this.fetchThread({ threadId: this.id }).then(thread => {
+      this.fetchUser({ userId: thread.userId })
+      this.fetchPosts({ ids: Object.keys(thread.posts) }).then(posts => {
+        posts.forEach(post => this.fetchUser({ userId: post.userId }))
       })
     })
   }

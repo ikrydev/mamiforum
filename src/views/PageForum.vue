@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import ThreadList from '@/components/ThreadList'
 
 export default {
@@ -36,10 +37,13 @@ export default {
       return Object.values(this.$store.state.threads).filter(thread => thread.forumId === this.id)
     }
   },
+  methods: {
+    ...mapActions(['fetchForum', 'fetchThreads', 'fetchUser'])
+  },
   created () {
-    this.$store.dispatch('fetchForum', { forumId: this.id }).then(forum => {
-      this.$store.dispatch('fetchThreads', { ids: forum.threads }).then(threads => {
-        threads.forEach(thread => this.$store.dispatch('fetchUser', { userId: thread.userId }))
+    this.fetchForum({ forumId: this.id }).then(forum => {
+      this.fetchThreads({ ids: forum.threads }).then(threads => {
+        threads.forEach(thread => this.fetchUser({ userId: thread.userId }))
       })
     })
   }
