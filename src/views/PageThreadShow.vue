@@ -54,12 +54,12 @@ export default {
     this.$store.dispatch('fetchThread', { threadId: this.id }).then(thread => {
       // fetch thread user
       this.$store.dispatch('fetchUser', { userId: thread.userId })
-
-      Object.keys(thread.posts).forEach(async postId => {
-        // fetch post
-        const post = await this.$store.dispatch('fetchPost', { postId: postId })
-        // fetch post user
-        this.$store.dispatch('fetchUser', { userId: post.userId })
+      // fetch posts
+      this.$store.dispatch('fetchPosts', { ids: Object.keys(thread.posts) }).then(posts => {
+        posts.forEach(post => {
+          // fetch author of post
+          this.$store.dispatch('fetchUser', { userId: post.userId })
+        })
       })
     })
   }

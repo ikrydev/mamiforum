@@ -1,5 +1,5 @@
 <template>
-  <div class="forum-wrapper">
+  <div v-if="forum && threads" class="forum-wrapper">
     <div class="col-full push-top">
       <div class="forum-header">
         <div class="forum-details">
@@ -35,6 +35,13 @@ export default {
     threads () {
       return Object.values(this.$store.state.threads).filter(thread => thread.forumId === this.id)
     }
+  },
+  created () {
+    this.$store.dispatch('fetchForum', { forumId: this.id }).then(forum => {
+      this.$store.dispatch('fetchThreads', { ids: forum.threads }).then(threads => {
+        threads.forEach(thread => this.$store.dispatch('fetchUser', { userId: thread.userId }))
+      })
+    })
   }
 }
 </script>

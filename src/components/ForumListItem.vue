@@ -14,7 +14,7 @@
       </p>
     </div>
 
-    <!-- TODO: implement last thread -->
+    <!-- //TODO: implement last thread -->
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full push-top">
+  <div v-if="thread" class="col-full push-top">
     <h1>
       Editing
       <i>{{thread.title}}</i>
@@ -32,7 +32,8 @@ export default {
       return this.$store.state.threads[this.id]
     },
     text () {
-      return this.$store.state.posts[this.thread.firstPostId].text
+      const post = this.$store.state.posts[this.thread.firstPostId]
+      return post ? post.text : null
     }
   },
   methods: {
@@ -44,6 +45,11 @@ export default {
     cancel () {
       this.$router.push({ name: 'ThreadShow', params: { id: this.thread['.key'] } })
     }
+  },
+  created () {
+    this.$store.dispatch('fetchThread', { threadId: this.id }).then(thread => {
+      this.$store.dispatch('fetchPost', { postId: thread.firstPostId })
+    })
   }
 }
 </script>

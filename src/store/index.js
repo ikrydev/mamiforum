@@ -124,14 +124,47 @@ export default new Vuex.Store({
           })
       })
     },
+    fetchCategory ({ dispatch }, { categoryId }) {
+      return dispatch('fetchItem', { resource: 'categories', id: categoryId, emoji: '🏷' })
+    },
+    fetchForum ({ dispatch }, { forumId }) {
+      return dispatch('fetchItem', { resource: 'forums', id: forumId, emoji: '📃' })
+    },
     fetchThread ({ dispatch }, { threadId }) {
       return dispatch('fetchItem', { resource: 'threads', id: threadId, emoji: '📄' })
+    },
+    fetchPost ({ dispatch }, { postId }) {
+      return dispatch('fetchItem', { resource: 'posts', id: postId, emoji: '📚' })
     },
     fetchUser ({ dispatch }, { userId }) {
       return dispatch('fetchItem', { resource: 'users', id: userId, emoji: '👨‍💼' })
     },
-    fetchPost ({ dispatch }, { postId }) {
-      return dispatch('fetchItem', { resource: 'posts', id: postId, emoji: '📚' })
+    fetchAllCategories ({ state, commit }) {
+      console.log('🔥 🏷 : all')
+      return new Promise((resolve, reject) => {
+        firebase.database().ref('categories').once('value', snapshot => {
+          const categories = snapshot.val()
+          Object.keys(categories).forEach(categoryId => {
+            const category = categories[categoryId]
+            commit('setItem', { resource: 'categories', id: categoryId, item: category })
+          })
+
+          resolve(Object.values(state.categories))
+        })
+      })
+    },
+    fetchItems ({ dispatch }, { ids, resource, emoji }) {
+      ids = Array.isArray(ids) ? ids : Object.keys(ids)
+      return Promise.all(ids.map(id => dispatch('fetchItem', { resource, id, emoji })))
+    },
+    fetchForums ({ dispatch }, { ids }) {
+      return dispatch('fetchItems', { ids, resource: 'forums', emoji: '📃' })
+    },
+    fetchThreads ({ dispatch }, { ids }) {
+      return dispatch('fetchItems', { ids, resource: 'threads', emoji: '📄' })
+    },
+    fetchPosts ({ dispatch }, { ids }) {
+      return dispatch('fetchItems', { ids, resource: 'posts', emoji: '📚' })
     }
   }
 })
