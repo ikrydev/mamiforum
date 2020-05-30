@@ -1,5 +1,5 @@
 <template>
-  <div class="col-large push-top">
+  <div class="col-large push-top" v-if="thread && user">
     <h1>{{thread.title}}</h1>
     <router-link
       :to="{name: 'ThreadEdit', params: {id: thread['.key']}}"
@@ -16,8 +16,10 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
+import { objectPropertiesCounter } from '@/utils'
 
 export default {
   components: {
@@ -45,11 +47,20 @@ export default {
       return this.$store.getters.threadRepliesCount(this.id)
     },
     contributorsCount () {
-      const authorPost = this.posts.find(post => post['.key'] === this.thread.firstPostId)
-      const contributorIdsByPost = this.posts.filter(post => post.userId !== authorPost.userId).map(post => post.userId)
-      const uniqueContributors = [...new Set(contributorIdsByPost)]
-      return uniqueContributors.length
+      return objectPropertiesCounter(this.thread.contributors)
     }
+  },
+  methods: {
+    ...mapActions(['fetchThread', 'fetchUser', 'fetchPosts', 'fetchUser'])
+  },
+  created () {
+    this.fetchThread({ threadId: this.id }).then(thread => {
+      console.log(thread)
+      this.fetchUser({ userId: thread.userId })
+      this.fetchPosts({ ids: Object.keys(thread.posts) }).then(posts => {
+        posts.forEach(post => this.fetchUser({ userId: post.userId }))
+      })
+    })
   }
 }
 </script>
