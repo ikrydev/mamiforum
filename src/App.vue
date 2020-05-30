@@ -11,6 +11,7 @@
 <script>
 import TheNavbar from '@/components/TheNavbar'
 import AppSpinner from '@/components/AppSpinner'
+import Nprogress from 'nprogress'
 
 export default {
   components: {
@@ -33,5 +34,6 @@ export default {
 
 <style lang="scss">
 @import "assets/css/style.css";
+@import "~nprogress/nprogress.css";
 
 </style>
