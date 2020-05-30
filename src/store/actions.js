@@ -56,28 +56,31 @@ export default {
     const updates = {}
     updates[`posts/${postId}`] = post
     updates[`threads/${threadId}/posts/${postId}`] = postId
+    updates[`threads/${threadId}/contributors/${userId}`] = userId
     updates[`users/${userId}/posts/${postId}`] = postId
 
     firebase.database().ref().update(updates).then(() => {
       commit('setItem', { resource: 'posts', id: postId, item: post })
       commit('appendPostToThread', { parentId: threadId, childId: postId })
+      commit('appendContributorToThread', { parentId: threadId, childId: userId })
       commit('appendPostToUser', { parentId: userId, childId: postId })
       return Promise.resolve(state.posts[postId])
     })
   },
   updatePost ({ commit, state }, { postId, text }) {
-    const post = {
-      ...state.posts[postId],
-      text,
-      edited: {
-        at: Math.floor(Date.now() / 1000),
-        by: state.authId,
-        moderated: false
-      }
+    const post = state.posts[postId]
+    const edited = {
+      at: Math.floor(Date.now() / 1000),
+      by: state.authId,
+      moderated: false
     }
 
-    commit('setPost', { postId, post })
-    return Promise.resolve(state.posts[postId])
+    const updates = { text, edited }
+
+    firebase.database().ref('posts').child(postId).update(updates).then(() => {
+      commit('setPost', { postId, post: { ...post, text, edited } })
+      return Promise.resolve(post)
+    })
   },
   createThread ({ commit, state, dispatch }, { title, text, forumId }) {
     return new Promise((resolve, reject) => {
@@ -91,9 +94,11 @@ export default {
         title,
         userId,
         firstPostId: postId,
-        posts: {}
+        posts: {},
+        contributors: {}
       }
       thread.posts[postId] = postId
+      thread.contributors[userId] = userId
 
       const post = { publishedAt, threadId, userId, text }
 
@@ -115,6 +120,7 @@ export default {
         // update post
         commit('setItem', { resource: 'posts', id: postId, item: post })
         commit('appendPostToThread', { parentId: threadId, childId: postId })
+        commit('appendContributorToThread', { parentId: threadId, childId: userId })
         commit('appendPostToUser', { parentId: userId, childId: postId })
 
         resolve(state.threads[threadId])
@@ -125,7 +131,22 @@ export default {
     const thread = state.threads[threadId]
     const postId = thread.firstPostId
 
-    commit('setThread', { threadId, thread: { ...thread, title } })
-    dispatch('updatePost', { text, postId })
+    const post = state.posts[postId]
+    const edited = {
+      at: Math.floor(Date.now() / 1000),
+      by: state.authId,
+      moderated: false
+    }
+
+    const updates = {}
+    updates[`threads/${threadId}/title`] = title
+    updates[`posts/${postId}/text`] = text
+    updates[`posts/${postId}/edited`] = edited
+
+    firebase.database().ref().update(updates).then(() => {
+      commit('setThread', { threadId, thread: { ...thread, title } })
+      commit('setPost', { postId, post: { ...post, text, edited } })
+      return Promise.resolve({ ...thread, title })
+    })
   }
 }

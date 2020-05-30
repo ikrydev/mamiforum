@@ -22,6 +22,7 @@ export default {
     item['.key'] = id
     Vue.set(state[resource], id, item)
   },
+  appendContributorToThread: appendChildToParentMutation({ parent: 'threads', child: 'contributors' }),
   appendPostToThread: appendChildToParentMutation({ parent: 'threads', child: 'posts' }),
   appendPostToUser: appendChildToParentMutation({ parent: 'users', child: 'posts' }),
   appendThreadToForum: appendChildToParentMutation({ parent: 'forums', child: 'threads' }),
