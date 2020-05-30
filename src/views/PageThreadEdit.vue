@@ -16,9 +16,11 @@
 
 <script>
 import { mapActions } from 'vuex'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 import ThreadEditor from '@/components/ThreadEditor'
 
 export default {
+  mixins: [asyncDataStatus],
   components: {
     ThreadEditor
   },
@@ -49,9 +51,13 @@ export default {
     }
   },
   created () {
-    this.fetchThread({ threadId: this.id }).then(thread => {
-      this.fetchPost({ postId: thread.firstPostId })
-    })
+    this.fetchThread({ threadId: this.id })
+      .then(thread => {
+        return this.fetchPost({ postId: thread.firstPostId })
+      }).then(() => {
+        this.asyncDataStatus_fetched()
+        this.$emit('ready')
+      })
   }
 }
 </script>

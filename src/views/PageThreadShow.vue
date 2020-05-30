@@ -17,11 +17,13 @@
 
 <script>
 import { mapActions } from 'vuex'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
 import { objectPropertiesCounter } from '@/utils'
 
 export default {
+  mixins: [asyncDataStatus],
   components: {
     PostList,
     PostEditor
@@ -54,13 +56,16 @@ export default {
     ...mapActions(['fetchThread', 'fetchUser', 'fetchPosts', 'fetchUser'])
   },
   created () {
-    this.fetchThread({ threadId: this.id }).then(thread => {
-      console.log(thread)
-      this.fetchUser({ userId: thread.userId })
-      this.fetchPosts({ ids: Object.keys(thread.posts) }).then(posts => {
-        posts.forEach(post => this.fetchUser({ userId: post.userId }))
+    this.fetchThread({ threadId: this.id })
+      .then(thread => {
+        this.fetchUser({ userId: thread.userId })
+        return this.fetchPosts({ ids: thread.posts })
       })
-    })
+      .then(posts => Promise.all(posts.map(post => this.fetchUser({ userId: post.userId }))))
+      .then(() => {
+        this.asyncDataStatus_fetched()
+        this.$emit('ready')
+      })
   }
 }
 </script>
