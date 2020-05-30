@@ -1,5 +1,5 @@
 <template>
-  <div class="col-large push-top">
+  <div class="col-large push-top" v-if="thread && user">
     <h1>{{thread.title}}</h1>
     <router-link
       :to="{name: 'ThreadEdit', params: {id: thread['.key']}}"
@@ -16,10 +16,14 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
+import { objectPropertiesCounter } from '@/utils'
 
 export default {
+  mixins: [asyncDataStatus],
   components: {
     PostList,
     PostEditor
@@ -42,14 +46,26 @@ export default {
       return this.$store.state.users[this.thread.userId]
     },
     repliesCount () {
-      return this.posts.length - 1
+      return this.$store.getters.threadRepliesCount(this.id)
     },
     contributorsCount () {
-      const authorPost = this.posts.find(post => post['.key'] === this.thread.firstPostId)
-      const contributorIdsByPost = this.posts.filter(post => post.userId !== authorPost.userId).map(post => post.userId)
-      const uniqueContributors = [...new Set(contributorIdsByPost)]
-      return uniqueContributors.length
+      return objectPropertiesCounter(this.thread.contributors)
     }
+  },
+  methods: {
+    ...mapActions(['fetchThread', 'fetchUser', 'fetchPosts', 'fetchUser'])
+  },
+  created () {
+    this.fetchThread({ threadId: this.id })
+      .then(thread => {
+        this.fetchUser({ userId: thread.userId })
+        return this.fetchPosts({ ids: thread.posts })
+      })
+      .then(posts => Promise.all(posts.map(post => this.fetchUser({ userId: post.userId }))))
+      .then(() => {
+        this.asyncDataStatus_fetched()
+        this.$emit('ready')
+      })
   }
 }
 </script>

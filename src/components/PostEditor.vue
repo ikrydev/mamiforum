@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   props: {
     threadId: {
@@ -49,6 +51,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['createPost', 'updatePost']),
     save () {
       (this.isEditing ? this.update() : this.create()).then(post => {
         this.clearForm()
@@ -64,7 +67,7 @@ export default {
         threadId: this.threadId
       }
 
-      return this.$store.dispatch('createPost', { ...post })
+      return this.createPost({ ...post })
     },
     update () {
       const post = {
@@ -72,7 +75,7 @@ export default {
         text: this.text
       }
 
-      return this.$store.dispatch('updatePost', { ...post })
+      return this.updatePost({ ...post })
     },
     clearForm () {
       this.text = ''
