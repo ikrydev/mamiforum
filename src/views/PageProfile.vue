@@ -1,5 +1,4 @@
 <template>
-  <div>
     <div class="flex-grid">
       <div class="col-3 push-top">
         <user-profile-card
@@ -23,7 +22,6 @@
         <post-list :posts="userPosts"></post-list>
       </div>
     </div>
-  </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
