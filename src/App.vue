@@ -2,18 +2,20 @@
   <div id="app">
     <TheNavbar/>
     <div class="container">
-      <router-view v-show="showPage" @ready="showPage = true"/>
-      <div v-show="!showPage">Loading...</div>
+      <router-view v-show="showPage" @ready="showPage = true"></router-view>
+      <app-spinner v-show="!showPage"></app-spinner>
     </div>
   </div>
 </template>
 
 <script>
 import TheNavbar from '@/components/TheNavbar'
+import AppSpinner from '@/components/AppSpinner'
 
 export default {
   components: {
-    TheNavbar
+    TheNavbar,
+    AppSpinner
   },
   data () {
     return {
