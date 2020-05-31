@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     categoryForum () {
-      return Object.values(this.$store.state.forums).filter(forum => forum.categoryId === this.category['.key'])
+      return Object.values(this.$store.state.forums.items).filter(forum => forum.categoryId === this.category['.key'])
     }
   }
 }

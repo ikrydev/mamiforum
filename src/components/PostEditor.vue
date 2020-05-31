@@ -51,7 +51,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['createPost', 'updatePost']),
+    ...mapActions('posts', ['createPost', 'updatePost']),
     save () {
       (this.isEditing ? this.update() : this.create()).then(post => {
         this.clearForm()

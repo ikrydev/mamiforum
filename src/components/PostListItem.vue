@@ -48,13 +48,13 @@ export default {
   },
   computed: {
     user () {
-      return this.$store.state.users[this.post.userId]
+      return this.$store.state.users.items[this.post.userId]
     },
     userPostsCount () {
-      return this.$store.getters.userPostsCount(this.user['.key'])
+      return this.$store.getters['users/userPostsCount'](this.user['.key'])
     },
     userThreadsCount () {
-      return this.$store.getters.userThreadsCount(this.user['.key'])
+      return this.$store.getters['users/userThreadsCount'](this.user['.key'])
     }
   },
   methods: {

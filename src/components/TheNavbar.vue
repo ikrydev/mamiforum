@@ -17,9 +17,10 @@
         <li class="navbar-user">
           <a @click.prevent="isDropdownOpen = !isDropdownOpen">
             <img
+              @error="useDefaultAvatar"
               class="avatar-small"
               :src="user.avatar"
-              alt
+              :alt="user.name"
             />
             <span>
               {{user.name}}
@@ -37,7 +38,7 @@
                 </router-link>
               </li>
               <li class="dropdown-menu-item">
-                <a @click.prevent="$store.dispatch('logOut')">Log out</a>
+                <a @click.prevent="$store.dispatch('auth/logOut')">Log out</a>
               </li>
             </ul>
           </div>
@@ -66,8 +67,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      user: 'authUser'
+      user: 'auth/authUser'
     })
+  },
+  methods: {
+    useDefaultAvatar (e) {
+      e.target.src = require('@/assets/img/user.png')
+    }
   }
 }
 </script>

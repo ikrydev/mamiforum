@@ -36,14 +36,15 @@ export default {
   },
   computed: {
     forum () {
-      return this.$store.state.forums[this.id]
+      return this.$store.state.forums.items[this.id]
     },
     hasUnsavedChanged () {
       return (this.$refs.editor.form.title || this.$refs.editor.form.text) && !this.saved
     }
   },
   methods: {
-    ...mapActions(['fetchForum', 'createThread']),
+    ...mapActions('threads', ['createThread']),
+    ...mapActions('forums', ['fetchForum']),
     async save ({ title, text }) {
       const forumId = this.id
       const thread = await this.createThread({ title, text, forumId })
