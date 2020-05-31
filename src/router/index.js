@@ -1,36 +1,39 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '*',
-    name: 'NotFound',
-    component: () => import(/* webpackChunkName: "notfound" */ '@/views/PageNotFound.vue')
-  },
   {
     path: '/',
     name: 'Home',
     component: () => import(/* webpackChunkName: "home" */ '@/views/PageHome.vue')
   },
   {
+    path: '/404',
+    name: 'NotFound',
+    component: () => import(/* webpackChunkName: "notfound" */ '@/views/PageNotFound.vue')
+  },
+  {
     path: '/thread/create/:id',
     name: 'ThreadCreate',
     props: true,
-    component: () => import(/* webpackChunkName: "thread-create" */ '@/views/PageThreadCreate.vue')
+    meta: { requiresAuth: true },
+    component: () => import(/* webpackChunkName: "thread" */ '@/views/PageThreadCreate.vue')
   },
   {
     path: '/thread/:id',
     name: 'ThreadShow',
     props: true,
-    component: () => import(/* webpackChunkName: "thread-show" */ '@/views/PageThreadShow.vue')
+    component: () => import(/* webpackChunkName: "thread" */ '@/views/PageThreadShow.vue')
   },
   {
     path: '/thread/:id/edit',
     name: 'ThreadEdit',
     props: true,
-    component: () => import(/* webpackChunkName: "thread-edit" */ '@/views/PageThreadEdit.vue')
+    meta: { requiresAuth: true },
+    component: () => import(/* webpackChunkName: "thread" */ '@/views/PageThreadEdit.vue')
   },
   {
     path: '/forum/:id',
@@ -47,23 +50,39 @@ const routes = [
   {
     path: '/profile',
     name: 'Profile',
+    meta: { requiresAuth: true },
     component: () => import(/* webpackChunkName: "profile" */ '@/views/PageProfile.vue')
   },
   {
     path: '/profile/edit',
     name: 'ProfileEdit',
     props: { edit: true },
+    meta: { requiresAuth: true },
     component: () => import(/* webpackChunkName: "profile" */ '@/views/PageProfile.vue')
   },
   {
     path: '/register',
     name: 'Register',
-    component: () => import(/* webpackChunkName: "register" */ '@/views/PageRegister.vue')
+    meta: { requiresGuest: true },
+    component: () => import(/* webpackChunkName: "auth" */ '@/views/PageRegister.vue')
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import(/* webpackChunkName: "login" */ '@/views/PageLogin.vue')
+    meta: { requiresGuest: true },
+    component: () => import(/* webpackChunkName: "auth" */ '@/views/PageLogin.vue')
+  },
+  {
+    path: '/logout',
+    name: 'Logout',
+    meta: { requiresAuth: true },
+    beforeEnter: (to, from, next) => {
+      store.dispatch('logOut').then(() => next({ name: 'Home' }))
+    }
+  },
+  {
+    path: '*',
+    redirect: '/404'
   }
 ]
 
@@ -71,6 +90,21 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  console.log(`🚦 navigate to ${to.name} from ${from.name}`)
+  store.dispatch('initAuthentication').then(user => {
+    if (to.matched.some(route => route.meta.requiresAuth)) {
+      if (user) next()
+      else next({ name: 'Login' })
+    } else if (to.matched.some(route => route.meta.requiresGuest)) {
+      if (user) next({ name: 'Home' })
+      else next()
+    } else {
+      next()
+    }
+  })
 })
 
 export default router

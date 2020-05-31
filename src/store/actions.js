@@ -205,5 +205,22 @@ export default {
     return firebase.auth().signOut().then(() => {
       commit('setAuthId', null)
     })
+  },
+  initAuthentication ({ state, commit, dispatch }) {
+    console.log('👣 auth state changed')
+    if (state.unsubscribeAuthObserver) {
+      state.unsubscribeAuthObserver()
+    }
+    return new Promise((resolve, reject) => {
+      const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          dispatch('fetchAuthUser').then(dbUser => resolve(dbUser))
+        } else {
+          resolve(null)
+        }
+      })
+
+      commit('setUnsubscribeAuthObserver', unsubscribe)
+    })
   }
 }
