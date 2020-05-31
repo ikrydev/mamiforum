@@ -13,7 +13,7 @@ This is project repository for final project on Mamicamp 2020.
 - [x] Forum Posts
 - [x] Integration with Firebase Real-Time Database
 - [x] User Authentification ( With Google Authentication )
-- [ ] Route Middleware
+- [x] Route Middleware
 - [ ] Validation All Form
 
 ## Project setup
