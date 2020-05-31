@@ -88,8 +88,9 @@ export default {
       const user = {
         ...this.activeUser
       }
-      this.updateProfile({ useId: user['.key'], user })
-      this.$router.push({ name: 'Profile' })
+      this.updateProfile(user).then(() => {
+        this.$router.push({ name: 'Profile' })
+      })
     },
     cancel () {
       this.$router.push({ name: 'Profile' })

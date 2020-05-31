@@ -1,8 +1,24 @@
 import firebase from 'firebase'
+import { objectEmptyPropertiesRemover } from '@/utils'
 
 export default {
-  updateProfile ({ commit }, { userId, user }) {
-    commit('setUser', { userId, user })
+  updateProfile ({ commit }, user) {
+    const updates = {
+      avatar: user.avatar,
+      username: user.username,
+      name: user.name,
+      bio: user.bio,
+      website: user.website,
+      email: user.email,
+      location: user.location
+    }
+
+    return new Promise((resolve, reject) => {
+      firebase.database().ref('users').child(user['.key']).update(objectEmptyPropertiesRemover(updates)).then(() => {
+        resolve(user)
+        commit('setUser', { userId: user['.key'], user })
+      })
+    })
   },
   fetchAuthUser ({ commit, dispatch }) {
     const userId = firebase.auth().currentUser.uid
