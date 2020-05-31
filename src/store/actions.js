@@ -1,5 +1,4 @@
 import firebase from 'firebase'
-import router from '@/router'
 
 export default {
   updateProfile ({ commit }, { userId, user }) {
@@ -7,8 +6,18 @@ export default {
   },
   fetchAuthUser ({ commit, dispatch }) {
     const userId = firebase.auth().currentUser.uid
-    dispatch('fetchUser', { userId }).then(() => {
-      commit('setAuthId', userId)
+    return new Promise((resolve, reject) => {
+      // check if user exists in database
+      firebase.database().ref('users').child(userId).once('value', snapshot => {
+        if (snapshot.exists()) {
+          dispatch('fetchUser', { userId }).then(user => {
+            commit('setAuthId', userId)
+            resolve(user)
+          })
+        } else {
+          resolve(null)
+        }
+      })
     })
   },
   fetchItem ({ commit, state }, { resource, id, emoji }) {
@@ -157,7 +166,7 @@ export default {
       return Promise.resolve({ ...thread, title })
     })
   },
-  createUser ({ commit, state }, { id, name, username, email, password, avatar = null }) {
+  createUser ({ commit, state }, { id, name, username, email, password = null, avatar = null }) {
     return new Promise((resolve, reject) => {
       const registeredAt = Math.floor(Date.now() / 1000)
       const usernameLower = username.toLowerCase()
@@ -174,15 +183,25 @@ export default {
     return firebase.auth().createUserWithEmailAndPassword(email, password)
       .then(({ user }) => {
         dispatch('createUser', { id: user.uid, name, username, email, password, avatar })
+          .then(() => dispatch('fetchAuthUser'))
       })
   },
-  loginUserWithEmailAndPassword ({ dispatch }, { email, password }) {
+  logInUserWithEmailAndPassword ({ dispatch }, { email, password }) {
     return firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(() => {
-        dispatch('fetchAuthUser')
-      })
+      .then(() => dispatch('fetchAuthUser'))
   },
-  signOut ({ commit }) {
+  logInWithGoogle ({ dispatch }) {
+    const provider = new firebase.auth.GoogleAuthProvider()
+    return firebase.auth().signInWithPopup(provider).then(({ user }) => {
+      firebase.database().ref('users').child(user.uid).once('value', snapshot => {
+        if (!snapshot.exists()) {
+          const { uid, displayName, email, photoURL } = user
+          return dispatch('createUser', { id: uid, name: displayName, username: email, email, avatar: photoURL }).then(() => dispatch('fetchAuthUser'))
+        }
+      })
+    })
+  },
+  logOut ({ commit }) {
     return firebase.auth().signOut().then(() => {
       commit('setAuthId', null)
     })

@@ -34,7 +34,7 @@
         </div>
       </form>
       <div class="text-center push-top">
-        <button class="btn-red btn-xsmall">
+        <button class="btn-red btn-xsmall" @click.prevent="registerWithGoogle">
           <i class="fa fa-google fa-btn"></i>Sign up with Google
         </button>
       </div>
@@ -58,13 +58,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['registerUserWithEmailAndPassword']),
+    ...mapActions(['registerUserWithEmailAndPassword', 'logInWithGoogle']),
     register () {
       const { name, username, email, password, avatar } = this.form
       this.registerUserWithEmailAndPassword({ name, username, email, password, avatar })
-        .then(() => {
-          this.$router.push({ name: 'Home' })
-        })
+        .then(() => this.$router.push({ name: 'Home' }))
+    },
+    registerWithGoogle () {
+      this.logInWithGoogle().then(() => this.$router.push({ name: 'Home' }))
     }
   },
   created () {

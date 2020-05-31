@@ -25,7 +25,7 @@
       </form>
 
       <div class="push-top text-center">
-        <button class="btn-red btn-xsmall">
+        <button class="btn-red btn-xsmall" @click.prevent="logInWithGoogleAccount">
           <i class="fa fa-google fa-btn"></i>Sign in with Google
         </button>
       </div>
@@ -45,13 +45,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['loginUserWithEmailAndPassword']),
+    ...mapActions(['logInUserWithEmailAndPassword', 'logInWithGoogle']),
     login () {
       const { email, password } = this.form
-      this.loginUserWithEmailAndPassword({ email, password })
-        .then(() => {
-          this.$router.push({ name: 'Home' })
-        })
+      this.logInUserWithEmailAndPassword({ email, password })
+        .then(() => this.$router.push({ name: 'Home' }))
+        .catch(err => alert(`👨‍💼 : ${err.message}`))
+    },
+    logInWithGoogleAccount () {
+      this.logInWithGoogle()
+        .then(() => this.$router.push({ name: 'Home' }))
         .catch(err => alert(`👨‍💼 : ${err.message}`))
     }
   },
