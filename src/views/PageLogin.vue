@@ -49,13 +49,17 @@ export default {
     login () {
       const { email, password } = this.form
       this.logInUserWithEmailAndPassword({ email, password })
-        .then(() => this.$router.push({ name: 'Home' }))
+        .then(() => this.successRedirect())
         .catch(err => alert(`👨‍💼 : ${err.message}`))
     },
     logInWithGoogleAccount () {
       this.logInWithGoogle()
-        .then(() => this.$router.push({ name: 'Home' }))
+        .then(() => this.successRedirect())
         .catch(err => alert(`👨‍💼 : ${err.message}`))
+    },
+    successRedirect () {
+      const redirectURL = this.$route.query.redirectTo || { name: 'Home' }
+      this.$router.push(redirectURL)
     }
   },
   created () {

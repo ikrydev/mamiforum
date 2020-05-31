@@ -3,7 +3,7 @@
     <div class="user-info">
       <a href="#" class="user-name">{{user.name}}</a>
       <a href="#">
-        <img class="avatar-large" :src="user.avatar" :alt="user.name" />
+        <img @error="useDefaultAvatar" class="avatar-large" :src="user.avatar" :alt="user.name" />
       </a>
       <p class="desktop-only text-small">{{userThreadsCount}} threads</p>
       <p class="desktop-only text-small">{{userPostsCount}} posts</p>
@@ -55,6 +55,11 @@ export default {
     },
     userThreadsCount () {
       return this.$store.getters.userThreadsCount(this.user['.key'])
+    }
+  },
+  methods: {
+    useDefaultAvatar (e) {
+      e.target.src = require('@/assets/img/user.png')
     }
   }
 }

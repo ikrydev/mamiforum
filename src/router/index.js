@@ -97,7 +97,7 @@ router.beforeEach((to, from, next) => {
   store.dispatch('initAuthentication').then(user => {
     if (to.matched.some(route => route.meta.requiresAuth)) {
       if (user) next()
-      else next({ name: 'Login' })
+      else next({ name: 'Login', query: { redirectTo: to.path } })
     } else if (to.matched.some(route => route.meta.requiresGuest)) {
       if (user) next({ name: 'Home' })
       else next()
