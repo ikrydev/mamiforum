@@ -6,6 +6,7 @@
     </h1>
 
     <thread-editor
+      ref="editor"
       @save="save"
       @cancel="cancel"
       :title="thread.title"
@@ -30,6 +31,11 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      saved: false
+    }
+  },
   computed: {
     thread () {
       return this.$store.state.threads[this.id]
@@ -37,6 +43,11 @@ export default {
     text () {
       const post = this.$store.state.posts[this.thread.firstPostId]
       return post ? post.text : null
+    },
+    hasUnsavedChanged () {
+      const isTitleChanged = this.$refs.editor.form.title !== this.thread.title
+      const isTextChanged = this.$refs.editor.form.text !== this.text
+      return (isTitleChanged || isTextChanged) && !this.saved
     }
   },
   methods: {
@@ -44,6 +55,7 @@ export default {
     save ({ title, text }) {
       const threadId = this.thread['.key']
       this.updateThread({ title, text, threadId })
+      this.saved = true
       this.$router.push({ name: 'ThreadShow', params: { id: threadId } })
     },
     cancel () {
@@ -58,6 +70,14 @@ export default {
         this.asyncDataStatus_fetched()
         this.$emit('ready')
       })
+  },
+  beforeRouteLeave (to, form, next) {
+    if (this.hasUnsavedChanged) {
+      const confirmed = window.confirm('Are you sure you want to leave? unSaved chanegd will be lost.')
+      next(confirmed)
+    } else {
+      next()
+    }
   }
 }
 </script>
