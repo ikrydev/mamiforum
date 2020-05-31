@@ -1,6 +1,16 @@
 import firebase from 'firebase'
+import router from '@/router'
 
 export default {
+  updateProfile ({ commit }, { userId, user }) {
+    commit('setUser', { userId, user })
+  },
+  fetchAuthUser ({ commit, dispatch }) {
+    const userId = firebase.auth().currentUser.uid
+    dispatch('fetchUser', { userId }).then(() => {
+      commit('setAuthId', userId)
+    })
+  },
   fetchItem ({ commit, state }, { resource, id, emoji }) {
     console.log(`🔥 ${emoji} : ${id}`)
     return new Promise((resolve, reject) => {
@@ -33,6 +43,7 @@ export default {
   fetchForums: ({ dispatch }, { ids }) => dispatch('fetchItems', { ids, resource: 'forums', emoji: '📃' }),
   fetchThreads: ({ dispatch }, { ids }) => dispatch('fetchItems', { ids, resource: 'threads', emoji: '📄' }),
   fetchPosts: ({ dispatch }, { ids }) => dispatch('fetchItems', { ids, resource: 'posts', emoji: '📚' }),
+  fetchUsers: ({ dispatch }, { ids }) => dispatch('fetchItems', { ids, resource: 'useres', emoji: '👨‍💼' }),
 
   fetchCategory: ({ dispatch }, { categoryId }) => dispatch('fetchItem', { resource: 'categories', id: categoryId, emoji: '🏷' }),
   fetchForum: ({ dispatch }, { forumId }) => dispatch('fetchItem', { resource: 'forums', id: forumId, emoji: '📃' }),
@@ -40,9 +51,6 @@ export default {
   fetchPost: ({ dispatch }, { postId }) => dispatch('fetchItem', { resource: 'posts', id: postId, emoji: '📚' }),
   fetchUser: ({ dispatch }, { userId }) => dispatch('fetchItem', { resource: 'users', id: userId, emoji: '👨‍💼' }),
 
-  updateProfile ({ commit }, { userId, user }) {
-    commit('setUser', { userId, user })
-  },
   createPost ({ commit, state }, { text, threadId }) {
     const postId = firebase.database().ref('posts').push().key
     const userId = state.authId
@@ -127,7 +135,7 @@ export default {
       })
     })
   },
-  updateThread ({ commit, state, dispatch }, { title, text, threadId }) {
+  updateThread ({ commit, state }, { title, text, threadId }) {
     const thread = state.threads[threadId]
     const postId = thread.firstPostId
 
@@ -147,6 +155,26 @@ export default {
       commit('setThread', { threadId, thread: { ...thread, title } })
       commit('setPost', { postId, post: { ...post, text, edited } })
       return Promise.resolve({ ...thread, title })
+    })
+  },
+  createUser ({ commit, state }, { id, name, username, email, password, avatar = null }) {
+    return new Promise((resolve, reject) => {
+      const registeredAt = Math.floor(Date.now() / 1000)
+      const usernameLower = username.toLowerCase()
+      email = email.toLowerCase()
+      const user = { id, name, username, email, password, avatar, usernameLower, registeredAt }
+      firebase.database().ref('users').child(id).set(user).then(() => {
+        commit('setItem', { resource: 'users', id, item: user })
+
+        resolve(state.users[id])
+      })
+    })
+  },
+  createUserWithEmailAndPassword ({ commit, dispatch }, { name, username, email, password, avatar = null }) {
+    return firebase.auth().createUserWithEmailAndPassword(email, password).then(({ user }) => {
+      dispatch('createUser', { id: user.uid, name, username, email, password, avatar }).then(() => {
+        router.push({ name: 'Home' })
+      })
     })
   }
 }

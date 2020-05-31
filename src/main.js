@@ -22,6 +22,10 @@ Vue.component('AppDate', AppDate)
 
 Vue.config.productionTip = false
 
+firebase.auth().onAuthStateChanged(user => {
+  if (user) store.dispatch('fetchAuthUser')
+})
+
 new Vue({
   router,
   store,
