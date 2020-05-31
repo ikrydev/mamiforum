@@ -170,11 +170,21 @@ export default {
       })
     })
   },
-  createUserWithEmailAndPassword ({ commit, dispatch }, { name, username, email, password, avatar = null }) {
-    return firebase.auth().createUserWithEmailAndPassword(email, password).then(({ user }) => {
-      dispatch('createUser', { id: user.uid, name, username, email, password, avatar }).then(() => {
-        router.push({ name: 'Home' })
+  registerUserWithEmailAndPassword ({ commit, dispatch }, { name, username, email, password, avatar = null }) {
+    return firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then(({ user }) => {
+        dispatch('createUser', { id: user.uid, name, username, email, password, avatar })
       })
+  },
+  loginUserWithEmailAndPassword ({ dispatch }, { email, password }) {
+    return firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(() => {
+        dispatch('fetchAuthUser')
+      })
+  },
+  signOut ({ commit }) {
+    return firebase.auth().signOut().then(() => {
+      commit('setAuthId', null)
     })
   }
 }

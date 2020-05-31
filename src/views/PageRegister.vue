@@ -58,10 +58,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['createUserWithEmailAndPassword', 'fetchAuthUser']),
+    ...mapActions(['registerUserWithEmailAndPassword']),
     register () {
       const { name, username, email, password, avatar } = this.form
-      this.createUserWithEmailAndPassword({ name, username, email, password, avatar })
+      this.registerUserWithEmailAndPassword({ name, username, email, password, avatar })
+        .then(() => {
+          this.$router.push({ name: 'Home' })
+        })
     }
   },
   created () {
