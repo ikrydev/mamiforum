@@ -11,12 +11,19 @@
       </span>
     </p>
     <post-list :posts="posts"></post-list>
-    <post-editor :threadId="id"></post-editor>
+    <post-editor
+      v-if="authUser"
+      :threadId="id">
+    </post-editor>
+    <div v-else class="text-center" style="margin-bottom:50px">
+      <router-link :to="{ name: 'Login', query: { redirectTo: $route.path } }">Log In</router-link> or
+      <router-link :to="{ name: 'Register', query: { redirectTo: $route.path } }">Register</router-link> to post a reply.
+    </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import asyncDataStatus from '@/mixins/asyncDataStatus'
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
@@ -35,25 +42,28 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('auth', ['authUser']),
     thread () {
-      return this.$store.state.threads[this.id]
+      return this.$store.state.threads.items[this.id]
     },
     posts () {
       const postIds = Object.keys(this.thread.posts)
-      return Object.values(this.$store.state.posts).filter(post => postIds.includes(post['.key']))
+      return Object.values(this.$store.state.posts.items).filter(post => postIds.includes(post['.key']))
     },
     user () {
-      return this.$store.state.users[this.thread.userId]
+      return this.$store.state.users.items[this.thread.userId]
     },
     repliesCount () {
-      return this.$store.getters.threadRepliesCount(this.id)
+      return this.$store.getters['threads/threadRepliesCount'](this.id)
     },
     contributorsCount () {
       return objectPropertiesCounter(this.thread.contributors)
     }
   },
   methods: {
-    ...mapActions(['fetchThread', 'fetchUser', 'fetchPosts', 'fetchUser'])
+    ...mapActions('threads', ['fetchThread']),
+    ...mapActions('posts', ['fetchPosts']),
+    ...mapActions('users', ['fetchUser'])
   },
   created () {
     this.fetchThread({ threadId: this.id })

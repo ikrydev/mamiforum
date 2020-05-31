@@ -3,7 +3,7 @@
     <div class="user-info">
       <a href="#" class="user-name">{{user.name}}</a>
       <a href="#">
-        <img class="avatar-large" :src="user.avatar" :alt="user.name" />
+        <img @error="useDefaultAvatar" class="avatar-large" :src="user.avatar" :alt="user.name" />
       </a>
       <p class="desktop-only text-small">{{userThreadsCount}} threads</p>
       <p class="desktop-only text-small">{{userPostsCount}} posts</p>
@@ -48,13 +48,18 @@ export default {
   },
   computed: {
     user () {
-      return this.$store.state.users[this.post.userId]
+      return this.$store.state.users.items[this.post.userId]
     },
     userPostsCount () {
-      return this.$store.getters.userPostsCount(this.user['.key'])
+      return this.$store.getters['users/userPostsCount'](this.user['.key'])
     },
     userThreadsCount () {
-      return this.$store.getters.userThreadsCount(this.user['.key'])
+      return this.$store.getters['users/userThreadsCount'](this.user['.key'])
+    }
+  },
+  methods: {
+    useDefaultAvatar (e) {
+      e.target.src = require('@/assets/img/user.png')
     }
   }
 }
