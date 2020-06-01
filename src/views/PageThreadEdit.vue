@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isAuthorized && thread" class="col-full push-top">
+  <div v-if="isAuthorized && thread && text" class="col-full push-top">
     <h1>
       Editing
       <i>{{thread.title}}</i>
@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     isAuthorized () {
-      return this.thread.userId === this.$store.state.auth.authId
+      return this.thread ? (this.thread.userId === this.$store.state.auth.authId) : null
     },
     thread () {
       return this.$store.state.threads.items[this.id]
@@ -52,6 +52,7 @@ export default {
       return post ? post.text : null
     },
     hasUnsavedChanged () {
+      if (!this.$refs.editor) return false
       const isTitleChanged = this.$refs.editor.form.title !== this.thread.title
       const isTextChanged = this.$refs.editor.form.text !== this.text
       return (isTitleChanged || isTextChanged) && !this.saved
@@ -72,16 +73,13 @@ export default {
   },
   created () {
     this.fetchThread({ threadId: this.id })
-      .then(thread => {
-        return this.fetchPost({ postId: thread.firstPostId })
-      }).then(() => {
+      .then(thread => this.fetchPost({ postId: thread.firstPostId }))
+      .then(() => {
         this.asyncDataStatus_fetched()
         this.$emit('ready')
       })
   },
   beforeRouteLeave (to, form, next) {
-    if (!this.isAuthorized) next()
-
     if (this.hasUnsavedChanged) {
       const confirmed = window.confirm('Are you sure you want to leave? unSaved chanegd will be lost.')
       next(confirmed)

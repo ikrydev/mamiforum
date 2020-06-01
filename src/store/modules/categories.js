@@ -1,4 +1,5 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/database'
 
 const state = {
   items: {}
@@ -10,7 +11,6 @@ const mutations = {}
 
 const actions = {
   fetchAllCategories ({ state, commit }) {
-    console.log('🔥 🏷 : all')
     return new Promise((resolve, reject) => {
       firebase.database().ref('categories').once('value', snapshot => {
         const categories = snapshot.val()
