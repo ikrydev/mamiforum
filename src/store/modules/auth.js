@@ -1,4 +1,6 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/database'
+import 'firebase/auth'
 
 const state = {
   authId: null,
@@ -64,7 +66,6 @@ const actions = {
     })
   },
   initAuthentication ({ state, commit, dispatch }) {
-    console.log('👣 auth state changed')
     if (state.unsubscribeAuthObserver) {
       state.unsubscribeAuthObserver()
     }
