@@ -1,5 +1,5 @@
 <template>
-  <div v-if="thread" class="col-full push-top">
+  <div v-if="isAuthorized && thread" class="col-full push-top">
     <h1>
       Editing
       <i>{{thread.title}}</i>
@@ -12,6 +12,10 @@
       :title="thread.title"
       :text="text"
     ></thread-editor>
+  </div>
+  <div class="text-center" v-else>
+    <h1 class="push-top">Oops! You do not have access to edit this thread</h1>
+    <router-link :to="{ name:'ThreadShow', params:{ id: $route.params.id }}">Back to Thread ?</router-link>
   </div>
 </template>
 
@@ -37,6 +41,9 @@ export default {
     }
   },
   computed: {
+    isAuthorized () {
+      return this.thread.userId === this.$store.state.auth.authId
+    },
     thread () {
       return this.$store.state.threads.items[this.id]
     },
@@ -73,6 +80,8 @@ export default {
       })
   },
   beforeRouteLeave (to, form, next) {
+    if (!this.isAuthorized) next()
+
     if (this.hasUnsavedChanged) {
       const confirmed = window.confirm('Are you sure you want to leave? unSaved chanegd will be lost.')
       next(confirmed)

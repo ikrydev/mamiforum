@@ -11,7 +11,13 @@
     <div class="post-content">
       <template v-if="!editing">
         <div style="padding-right: 10px">{{post.text}}</div>
-        <a @click.prevent="editing = true" style="margin-left: auto;" class="link-unstyled" title="Make a change">
+        <a
+          v-if="isAuthorized"
+          @click.prevent="editing = true"
+          style="margin-left: auto;"
+          class="link-unstyled"
+          title="Make a change"
+        >
           <i class="fa fa-pencil"></i>
         </a>
       </template>
@@ -47,6 +53,9 @@ export default {
     }
   },
   computed: {
+    isAuthorized () {
+      return this.user['.key'] === this.$store.state.auth.authId
+    },
     user () {
       return this.$store.state.users.items[this.post.userId]
     },
