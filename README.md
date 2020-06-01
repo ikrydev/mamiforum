@@ -14,7 +14,7 @@ This is project repository for final project on Mamicamp 2020.
 - [x] Integration with Firebase Real-Time Database
 - [x] User Authentification ( With Google Authentication )
 - [x] Route Middleware
-- [ ] Validation All Form
+- [x] Validation All Form
 
 ## Project setup
 ```
