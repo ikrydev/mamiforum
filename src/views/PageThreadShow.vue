@@ -2,6 +2,7 @@
   <div class="col-large push-top" v-if="thread && user">
     <h1>{{thread.title}}</h1>
     <router-link
+      v-if="isAuthorized"
       :to="{name: 'ThreadEdit', params: {id: thread['.key']}}"
     ><i class="fa fa-pencil"></i> Edit Thread</router-link>
     <p>
@@ -45,6 +46,9 @@ export default {
     ...mapGetters('auth', ['authUser']),
     thread () {
       return this.$store.state.threads.items[this.id]
+    },
+    isAuthorized () {
+      return this.thread.userId === this.$store.state.auth.authId
     },
     posts () {
       const postIds = Object.keys(this.thread.posts)
