@@ -46,6 +46,11 @@ export default {
   },
   created () {
     this.fetchForum({ forumId: this.id }).then(forum => {
+      if (!forum.threads) {
+        this.asyncDataStatus_fetched()
+        this.$emit('ready')
+        return
+      }
       this.fetchThreads({ ids: forum.threads })
         .then(threads => {
           return Promise.all(threads.map(thread => this.fetchUser({ userId: thread.userId })))

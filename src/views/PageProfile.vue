@@ -14,12 +14,18 @@
       <div class="col-7 push-top">
         <div class="profile-header">
           <span class="text-lead">{{user.username}}'s recent activity</span>
-          <a href="#">See only started threads?</a>
+          <!-- <a href="#">See only started threads?</a> -->
         </div>
 
         <hr />
 
         <post-list :posts="userPosts"></post-list>
+        <template v-if="userPosts.length < 1">
+          <div class="text-center">
+            <img :src="require('@/assets/img/empty.png')" style="opacity: .5;width:100%;max-width:350px">
+            <h1>No Activity Found</h1>
+          </div>
+        </template>
       </div>
     </div>
 </template>
@@ -55,6 +61,11 @@ export default {
     ...mapActions('posts', ['fetchPosts'])
   },
   created () {
+    if (!this.user.posts) {
+      this.asyncDataStatus_fetched()
+      this.$emit('ready')
+      return false
+    }
     this.$store.dispatch('posts/fetchPosts', { ids: this.user.posts }).then(() => {
       this.asyncDataStatus_fetched()
       this.$emit('ready')

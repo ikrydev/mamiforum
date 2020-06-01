@@ -84,7 +84,7 @@
           <button type="submit" class="btn-blue btn-block">Register</button>
         </div>
       </form>
-      <div class="text-center push-top">
+      <div class="text-center push-top" style="margin-bottom:50px">
         <button class="btn-red btn-xsmall" @click.prevent="registerWithGoogle">
           <i class="fa fa-google fa-btn"></i>Sign up with Google
         </button>
