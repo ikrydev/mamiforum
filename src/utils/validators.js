@@ -3,7 +3,9 @@ import store from '@/store'
 
 const uniqueEmail = value => {
   if (value === '') return true
-  if (value === store.getters['auth/authUser'].email) return true
+  if (store.state.auth.authId) {
+    return value === store.getters['auth/authUser'].email
+  }
 
   return new Promise((resolve, reject) => {
     firebase.database().ref('users')
@@ -16,7 +18,9 @@ const uniqueEmail = value => {
 
 const uniqueUsername = value => {
   if (value === '') return true
-  if (value === store.getters['auth/authUser'].username) return true
+  if (store.state.auth.authId) {
+    return value === store.getters['auth/authUser'].username
+  }
 
   return new Promise((resolve, reject) => {
     firebase.database().ref('users')
