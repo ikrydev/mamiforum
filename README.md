@@ -5,6 +5,11 @@ This is project repository for final project on Mamicamp 2020.
 ## Stacks
 
 - Vue `2.6.11`
+  - Vuex
+  - Vue Router
+- Vuelidate
+- Firebase
+- SASS
 
 ## TODO
 
@@ -13,7 +18,7 @@ This is project repository for final project on Mamicamp 2020.
 - [x] Forum Posts
 - [x] Integration with Firebase Real-Time Database
 - [x] User Authentification ( With Google Authentication )
-- [x] Route Middleware
+- [x] Route Middleware & Protected Route
 - [x] Validation All Form
 
 ## Project setup
