@@ -25,6 +25,10 @@ This is project repository for final project on Mamicamp 2020.
 ```
 yarn install
 ```
+### Seed Database
+```
+yarn db:seed
+```
 
 ### Compiles and hot-reloads for development
 ```
