@@ -6,11 +6,23 @@
 
         <div class="form-group">
           <label for="email">Email</label>
-          <input v-model="form.email" id="email" type="text" class="form-input" />
+          <input
+            v-model="form.email"
+            id="email"
+            type="text"
+            class="form-input"
+          />
+          <template v-if="$v.form.email.$error">
+            <span v-if="!$v.form.email.required" class="form-error">This field is required</span>
+            <span v-if="!$v.form.email.email" class="form-error">please enter valid email address</span>
+          </template>
         </div>
         <div class="form-group">
           <label for="password">Password</label>
           <input v-model="form.password" id="password" type="password" class="form-input" />
+          <template v-if="$v.form.password.$error">
+            <span v-if="!$v.form.password.required" class="form-error">This field is required</span>
+          </template>
         </div>
 
         <div class="push-top">
@@ -34,6 +46,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import { email, required } from 'vuelidate/lib/validators'
 
 export default {
   data () {
@@ -44,9 +57,22 @@ export default {
       }
     }
   },
+  validations: {
+    form: {
+      email: {
+        required,
+        email
+      },
+      password: {
+        required
+      }
+    }
+  },
   methods: {
     ...mapActions('auth', ['logInUserWithEmailAndPassword', 'logInWithGoogle']),
     login () {
+      this.$v.form.$touch()
+      if (this.$v.form.$invalid) return
       const { email, password } = this.form
       this.logInUserWithEmailAndPassword({ email, password })
         .then(() => this.successRedirect())

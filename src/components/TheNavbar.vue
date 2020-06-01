@@ -1,20 +1,19 @@
 <template>
-  <header class="header" id="header">
+  <header class="header" id="header" v-click-outside="closeMobileNav" v-handle-scroll="closeMobileNav">
     <router-link :to="{ name: 'Home' }" class="logo">
       <img :src="require('@/assets/img/logo.png')" />
     </router-link>
 
-    <div class="btn-hamburger">
+    <div class="btn-hamburger" @click="isMobileNavOpen = !isMobileNavOpen">
       <!-- use .btn-humburger-active to open the menu -->
       <div class="top bar"></div>
       <div class="middle bar"></div>
       <div class="bottom bar"></div>
     </div>
 
-    <!-- use .navbar-open to open nav -->
-    <nav class="navbar">
+    <nav class="navbar" :class="{'navbar-open': isMobileNavOpen}">
       <ul v-if="user">
-        <li class="navbar-user">
+        <li class="navbar-user" v-click-outside="closeUserDropdown">
           <a @click.prevent="isDropdownOpen = !isDropdownOpen">
             <img
               @error="useDefaultAvatar"
@@ -43,6 +42,14 @@
             </ul>
           </div>
         </li>
+        <li class="navbar-mobile-item">
+          <router-link router-link :to="{name: 'Profile'}">
+            View profile
+          </router-link>
+        </li>
+        <li class="navbar-mobile-item">
+          <a @click.prevent="$store.dispatch('auth/logOut')">Log out</a>
+        </li>
       </ul>
       <ul v-else>
         <li class="navbar-item">
@@ -58,12 +65,19 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import clickOutside from '@/directives/click-outside'
+import handleScroll from '@/directives/handle-scroll'
 
 export default {
   data () {
     return {
-      isDropdownOpen: false
+      isDropdownOpen: false,
+      isMobileNavOpen: false
     }
+  },
+  directives: {
+    clickOutside,
+    handleScroll
   },
   computed: {
     ...mapGetters({
@@ -73,6 +87,12 @@ export default {
   methods: {
     useDefaultAvatar (e) {
       e.target.src = require('@/assets/img/user.png')
+    },
+    closeUserDropdown () {
+      this.isDropdownOpen = false
+    },
+    closeMobileNav () {
+      this.isMobileNavOpen = false
     }
   }
 }

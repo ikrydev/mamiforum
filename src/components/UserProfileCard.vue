@@ -29,7 +29,16 @@
       </p>
     </div>
 
-    <p class="text-xsmall text-faded text-center">Member since june 2020, last visited 2 hours ago</p>
+    <p class="text-xsmall text-faded text-center">
+      <template v-if="user.registeredAt">
+        Member since
+        <app-date :timestamp="user.registeredAt"></app-date>
+      </template>
+      <template v-if="user.lastVisitAt">
+        last visited
+        <app-date :timestamp="user.lastVisitAt"></app-date>
+      </template>
+    </p>
 
     <div class="text-center">
       <hr />

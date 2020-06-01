@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import firebase from 'firebase'
+import vuelidate from 'vuelidate'
+
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -21,6 +23,8 @@ firebase.initializeApp(firebaseConfig)
 Vue.component('AppDate', AppDate)
 
 Vue.config.productionTip = false
+
+Vue.use(vuelidate)
 
 new Vue({
   router,
