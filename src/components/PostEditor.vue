@@ -53,7 +53,10 @@ export default {
   methods: {
     ...mapActions('posts', ['createPost', 'updatePost']),
     save () {
-      (this.isEditing ? this.update() : this.create()).then(post => {
+      if (this.text === '') {
+        alert('Please type something before submit post!')
+      }
+      this.persist().then(post => {
         this.clearForm()
         this.$emit('save', { post })
       })
@@ -79,6 +82,9 @@ export default {
     },
     clearForm () {
       this.text = ''
+    },
+    persist () {
+      return (this.isEditing ? this.update() : this.create())
     }
   }
 }

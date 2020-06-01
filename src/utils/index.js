@@ -3,7 +3,7 @@ const objectPropertiesCounter = obj => Object.keys(obj || {}).length
 const objectEmptyPropertiesRemover = obj => {
   const objCopy = { ...obj }
   Object.keys(objCopy).forEach(key => {
-    if (!objCopy[key]) delete objCopy[key]
+    if ([null, undefined].includes(objCopy[key])) delete objCopy[key]
   })
 
   return objCopy
