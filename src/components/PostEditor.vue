@@ -55,6 +55,7 @@ export default {
     save () {
       if (this.text === '') {
         alert('Please type something before submit post!')
+        return false
       }
       this.persist().then(post => {
         this.clearForm()
