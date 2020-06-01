@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 import vuelidate from 'vuelidate'
 
 import App from './App.vue'

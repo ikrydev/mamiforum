@@ -1,8 +1,8 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/database'
 
 export default {
   fetchItem ({ commit, state }, { resource, id, emoji }) {
-    console.log(`🔥 ${emoji} : ${id}`)
     return new Promise((resolve, reject) => {
       firebase.database().ref(resource).child(id)
         .once('value', snapshot => {
