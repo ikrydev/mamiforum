@@ -37,6 +37,7 @@ const actions = {
     const updates = {
       avatar: user.avatar,
       username: user.username,
+      usernameLower: (user.username).toLowerCase(),
       name: user.name,
       bio: user.bio,
       website: user.website,
